@@ -333,10 +333,10 @@ export class DatabaseService {
   }
 
   /**
-   * 生成 MESSAGE_ID
-   * 从 mt_sys_sequence 取 CURRENT_VALUE，与 message 表 MAX(MESSAGE_ID) 比较取大
+   * 批量生成 MESSAGE_ID
+   * 一次性从 mt_sys_sequence 取 count 个连续 ID
    */
-  private async generateMessageId(): Promise<number> {
+  private async generateMessageIds(count: number): Promise<number[]> {
     const cfg = this.errorTableConfig;
     if (!cfg?.errorTable || !cfg?.errorSeqName) {
       throw new Error('未配置目标错误信息表或序列表');
@@ -363,36 +363,32 @@ export class DatabaseService {
     const seqResult = await this.adapter.executeQuery(seqQuery, [cfg.errorSeqName]);
     const seqValue = (seqResult.rows[0]?.CURRENT_VALUE as number) || 0;
 
-    // 3. 比较取大，统一先 +1
-    let base: number;
+    // 3. 比较取大，统一先 +1 作为起始 base
+    let startBase: number;
     if (maxBase >= seqValue) {
-      base = maxBase + 1;
+      startBase = maxBase + 1;
     } else {
-      base = seqValue + 1;
+      startBase = seqValue + 1;
     }
 
-    // 4. 更新序列表
+    const endBase = startBase + count - 1;
+
+    // 4. 更新序列表为最后一个 base
     const updateSeq = `UPDATE ${this.quoteIdentifier(seqTableRef)} SET CURRENT_VALUE = ? WHERE NAME = ?`;
-    const updateResult = await this.adapter.executeQuery(updateSeq, [base, cfg.errorSeqName]);
+    const updateResult = await this.adapter.executeQuery(updateSeq, [endBase, cfg.errorSeqName]);
 
     // 5. 检查更新是否生效，为 0 则插入新记录
     if ((updateResult.affectedRows || 0) === 0) {
       const insertSeq = `INSERT INTO ${this.quoteIdentifier(seqTableRef)} (NAME, CURRENT_VALUE) VALUES (?, ?)`;
-      await this.adapter.executeQuery(insertSeq, [cfg.errorSeqName, base]);
+      await this.adapter.executeQuery(insertSeq, [cfg.errorSeqName, endBase]);
     }
 
-    // 6. 字符串拼接生成 MESSAGE_ID
-    return parseInt(`${base}${suffix}`, 10);
-  }
-
-  /**
-   * 构建 INSERT SQL
-   */
-  private buildInsertSql(table: string, columns: string[]): string {
-    const quotedTable = this.quoteIdentifier(table);
-    const quotedColumns = columns.map(c => this.quoteIdentifier(c)).join(', ');
-    const placeholders = columns.map(() => '?').join(', ');
-    return `INSERT INTO ${quotedTable} (${quotedColumns}) VALUES (${placeholders})`;
+    // 6. 生成连续的 MESSAGE_ID 列表
+    const ids: number[] = [];
+    for (let i = 0; i < count; i++) {
+      ids.push(parseInt(`${startBase + i}${suffix}`, 10));
+    }
+    return ids;
   }
 
   /**
@@ -426,7 +422,14 @@ export class DatabaseService {
       : cfg.errorTlTable;
     const locales = cfg.errorLocales || ['zh_CN', 'en_US'];
 
-    let totalAffectedRows = 0;
+    // 先统一校验 MESSAGE 数组长度
+    for (const row of data) {
+      if (Array.isArray(row.MESSAGE) && row.MESSAGE.length !== locales.length) {
+        throw new Error(
+          `❌ MESSAGE 数组长度 (${row.MESSAGE.length}) 与配置语言数量 (${locales.length}) 不匹配。当前语言顺序：${locales.join(', ')}`
+        );
+      }
+    }
 
     // 开启事务（MySQL 支持）
     const supportsTx = typeof this.adapter.beginTransaction === 'function';
@@ -435,49 +438,50 @@ export class DatabaseService {
     }
 
     try {
-      for (const row of data) {
-        // 校验 MESSAGE 数组长度
-        if (Array.isArray(row.MESSAGE) && row.MESSAGE.length !== locales.length) {
-          throw new Error(
-            `❌ MESSAGE 数组长度 (${row.MESSAGE.length}) 与配置语言数量 (${locales.length}) 不匹配。当前语言顺序：${locales.join(', ')}`
-          );
-        }
+      // 1. 批量取号
+      const messageIds = await this.generateMessageIds(data.length);
 
-        const messageId = await this.generateMessageId();
+      // 2. 构建主表批量 INSERT
+      const mainColumns = [
+        'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
+        'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
+      ];
+      const mainValues: unknown[] = [];
+      const mainPlaceholders: string[] = [];
 
-        // 插入主表（CREATED_BY 等审计字段由数据库默认值自动填充）
-        const mainColumns = [
-          'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
-          'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
-        ];
-        // 主表只存第一种语言（index=0）的内容
+      for (let i = 0; i < data.length; i++) {
+        const row = data[i];
         const mainMessage = Array.isArray(row.MESSAGE) ? row.MESSAGE[0] : row.MESSAGE;
-        const mainValues = [
-          messageId, 2, row.MESSAGE_CODE, mainMessage,
-          'N', 1, 1,
-        ];
-        const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
-        const mainResult = await this.adapter.executeQuery(mainSql, mainValues);
-        totalAffectedRows += mainResult.affectedRows || 0;
+        mainValues.push(messageIds[i], 2, row.MESSAGE_CODE, mainMessage, 'N', 1, 1);
+        mainPlaceholders.push(`(${mainColumns.map(() => '?').join(', ')})`);
+      }
 
-        // 插入 tl 表（批量每种语言）
-        const tlColumns = ['MESSAGE_ID', 'LANG', 'MESSAGE'];
-        const tlValues: unknown[] = [];
-        const tlPlaceholders: string[] = [];
+      const mainQuotedTable = this.quoteIdentifier(mainTableRef);
+      const mainQuotedColumns = mainColumns.map(c => this.quoteIdentifier(c)).join(', ');
+      const mainSql = `INSERT INTO ${mainQuotedTable} (${mainQuotedColumns}) VALUES ${mainPlaceholders.join(', ')}`;
+      const mainResult = await this.adapter.executeQuery(mainSql, mainValues);
+      const totalAffectedRows = mainResult.affectedRows || 0;
 
+      // 3. 构建 tl 表批量 INSERT
+      const tlColumns = ['MESSAGE_ID', 'LANG', 'MESSAGE'];
+      const tlValues: unknown[] = [];
+      const tlPlaceholders: string[] = [];
+
+      for (let i = 0; i < data.length; i++) {
+        const row = data[i];
         for (const [index, locale] of locales.entries()) {
           const message = Array.isArray(row.MESSAGE)
             ? (row.MESSAGE[index] ?? row.MESSAGE[0])
             : row.MESSAGE;
-          tlValues.push(messageId, locale, message);
+          tlValues.push(messageIds[i], locale, message);
           tlPlaceholders.push(`(${tlColumns.map(() => '?').join(', ')})`);
         }
-
-        const tlQuotedTable = this.quoteIdentifier(tlTableRef);
-        const tlQuotedColumns = tlColumns.map(c => this.quoteIdentifier(c)).join(', ');
-        const tlSql = `INSERT INTO ${tlQuotedTable} (${tlQuotedColumns}) VALUES ${tlPlaceholders.join(', ')}`;
-        await this.adapter.executeQuery(tlSql, tlValues);
       }
+
+      const tlQuotedTable = this.quoteIdentifier(tlTableRef);
+      const tlQuotedColumns = tlColumns.map(c => this.quoteIdentifier(c)).join(', ');
+      const tlSql = `INSERT INTO ${tlQuotedTable} (${tlQuotedColumns}) VALUES ${tlPlaceholders.join(', ')}`;
+      await this.adapter.executeQuery(tlSql, tlValues);
 
       if (supportsTx) {
         await this.adapter.commit!();
