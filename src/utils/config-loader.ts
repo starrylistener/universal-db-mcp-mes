@@ -97,6 +97,7 @@ export function loadFromEnv(): Partial<AppConfig> {
       errorLocales: process.env.ERROR_LOCALES
         ? process.env.ERROR_LOCALES.split(',').map(s => s.trim())
         : ['zh_CN', 'en_US'],
+      errorSeqSuffix: process.env.ERROR_SEQ_SUFFIX || '001',
     };
   }
 

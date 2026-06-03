@@ -38,6 +38,7 @@ export async function startMcpServer(): Promise<void> {
     .option('--error-tl-table <table>', '错误信息多语言表名')
     .option('--error-multilang', '启用多语言模式', false)
     .option('--error-locales <list>', '多语言列表，逗号分隔', 'zh_CN,en_US')
+    .option('--error-seq-suffix <suffix>', '序列表 ID 后缀', '001')
     .action(async (options) => {
       try {
         // 提取 graceful shutdown 逻辑为复用函数
@@ -84,6 +85,7 @@ export async function startMcpServer(): Promise<void> {
           errorTlTable: options.errorTlTable,
           errorMultilang: options.errorMultilang,
           errorLocales: options.errorLocales.split(',').map((s: string) => s.trim()),
+          errorSeqSuffix: options.errorSeqSuffix,
         };
 
         if (options.type) {
