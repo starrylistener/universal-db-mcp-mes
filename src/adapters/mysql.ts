@@ -21,6 +21,7 @@ import { isWriteOperation as checkWriteOperation } from '../utils/safety.js';
 
 export class MySQLAdapter implements DbAdapter {
   private pool: mysql.Pool | null = null;
+  private connection: mysql.PoolConnection | null = null;
   private config: {
     host: string;
     port: number;
@@ -111,9 +112,10 @@ export class MySQLAdapter implements DbAdapter {
     }
 
     const startTime = Date.now();
+    const conn = this.connection || this.pool;
 
     try {
-      const [rows, fields] = await this.withRetry(() => this.pool!.execute(query, params));
+      const [rows, fields] = await this.withRetry(() => conn.execute(query, params));
       const executionTime = Date.now() - startTime;
 
       // 处理不同类型的查询结果
@@ -143,6 +145,44 @@ export class MySQLAdapter implements DbAdapter {
         `查询执行失败: ${error instanceof Error ? error.message : String(error)}`
       );
     }
+  }
+
+  /**
+   * 开始事务
+   */
+  async beginTransaction(): Promise<void> {
+    if (!this.pool) {
+      throw new Error('数据库未连接');
+    }
+    if (this.connection) {
+      throw new Error('事务已开启，不支持嵌套事务');
+    }
+    this.connection = await this.pool.getConnection();
+    await this.connection.beginTransaction();
+  }
+
+  /**
+   * 提交事务
+   */
+  async commit(): Promise<void> {
+    if (!this.connection) {
+      throw new Error('没有活跃的事务');
+    }
+    await this.connection.commit();
+    this.connection.release();
+    this.connection = null;
+  }
+
+  /**
+   * 回滚事务
+   */
+  async rollback(): Promise<void> {
+    if (!this.connection) {
+      throw new Error('没有活跃的事务');
+    }
+    await this.connection.rollback();
+    this.connection.release();
+    this.connection = null;
   }
 
   /**

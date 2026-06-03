@@ -424,51 +424,68 @@ export class DatabaseService {
 
     let totalAffectedRows = 0;
 
-    for (const row of data) {
-      // 校验 MESSAGE 数组长度
-      if (Array.isArray(row.MESSAGE) && row.MESSAGE.length !== locales.length) {
-        throw new Error(
-          `❌ MESSAGE 数组长度 (${row.MESSAGE.length}) 与配置语言数量 (${locales.length}) 不匹配。当前语言顺序：${locales.join(', ')}`
-        );
-      }
-
-      const messageId = await this.generateMessageId();
-
-      // 插入主表（CREATED_BY 等审计字段由数据库默认值自动填充）
-      const mainColumns = [
-        'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
-        'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
-      ];
-      // 主表只存第一种语言（index=0）的内容
-      const mainMessage = Array.isArray(row.MESSAGE) ? row.MESSAGE[0] : row.MESSAGE;
-      const mainValues = [
-        messageId, 2, row.MESSAGE_CODE, mainMessage,
-        'N', 1, 1,
-      ];
-      const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
-      const mainResult = await this.adapter.executeQuery(mainSql, mainValues);
-      totalAffectedRows += mainResult.affectedRows || 0;
-
-      // 插入 tl 表（批量每种语言）
-      const tlColumns = ['MESSAGE_ID', 'LANG', 'MESSAGE'];
-      const tlValues: unknown[] = [];
-      const tlPlaceholders: string[] = [];
-
-      for (const [index, locale] of locales.entries()) {
-        const message = Array.isArray(row.MESSAGE)
-          ? (row.MESSAGE[index] ?? row.MESSAGE[0])
-          : row.MESSAGE;
-        tlValues.push(messageId, locale, message);
-        tlPlaceholders.push(`(${tlColumns.map(() => '?').join(', ')})`);
-      }
-
-      const tlQuotedTable = this.quoteIdentifier(tlTableRef);
-      const tlQuotedColumns = tlColumns.map(c => this.quoteIdentifier(c)).join(', ');
-      const tlSql = `INSERT INTO ${tlQuotedTable} (${tlQuotedColumns}) VALUES ${tlPlaceholders.join(', ')}`;
-      await this.adapter.executeQuery(tlSql, tlValues);
+    // 开启事务（MySQL 支持）
+    const supportsTx = typeof this.adapter.beginTransaction === 'function';
+    if (supportsTx) {
+      await this.adapter.beginTransaction!();
     }
 
-    return { affectedRows: totalAffectedRows };
+    try {
+      for (const row of data) {
+        // 校验 MESSAGE 数组长度
+        if (Array.isArray(row.MESSAGE) && row.MESSAGE.length !== locales.length) {
+          throw new Error(
+            `❌ MESSAGE 数组长度 (${row.MESSAGE.length}) 与配置语言数量 (${locales.length}) 不匹配。当前语言顺序：${locales.join(', ')}`
+          );
+        }
+
+        const messageId = await this.generateMessageId();
+
+        // 插入主表（CREATED_BY 等审计字段由数据库默认值自动填充）
+        const mainColumns = [
+          'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
+          'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
+        ];
+        // 主表只存第一种语言（index=0）的内容
+        const mainMessage = Array.isArray(row.MESSAGE) ? row.MESSAGE[0] : row.MESSAGE;
+        const mainValues = [
+          messageId, 2, row.MESSAGE_CODE, mainMessage,
+          'N', 1, 1,
+        ];
+        const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
+        const mainResult = await this.adapter.executeQuery(mainSql, mainValues);
+        totalAffectedRows += mainResult.affectedRows || 0;
+
+        // 插入 tl 表（批量每种语言）
+        const tlColumns = ['MESSAGE_ID', 'LANG', 'MESSAGE'];
+        const tlValues: unknown[] = [];
+        const tlPlaceholders: string[] = [];
+
+        for (const [index, locale] of locales.entries()) {
+          const message = Array.isArray(row.MESSAGE)
+            ? (row.MESSAGE[index] ?? row.MESSAGE[0])
+            : row.MESSAGE;
+          tlValues.push(messageId, locale, message);
+          tlPlaceholders.push(`(${tlColumns.map(() => '?').join(', ')})`);
+        }
+
+        const tlQuotedTable = this.quoteIdentifier(tlTableRef);
+        const tlQuotedColumns = tlColumns.map(c => this.quoteIdentifier(c)).join(', ');
+        const tlSql = `INSERT INTO ${tlQuotedTable} (${tlQuotedColumns}) VALUES ${tlPlaceholders.join(', ')}`;
+        await this.adapter.executeQuery(tlSql, tlValues);
+      }
+
+      if (supportsTx) {
+        await this.adapter.commit!();
+      }
+
+      return { affectedRows: totalAffectedRows };
+    } catch (error) {
+      if (supportsTx) {
+        await this.adapter.rollback!();
+      }
+      throw error;
+    }
   }
 
   /**

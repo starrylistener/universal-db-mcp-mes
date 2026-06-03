@@ -35,6 +35,21 @@ export interface DbAdapter {
    * @returns 如果是写操作返回 true
    */
   isWriteOperation(query: string): boolean;
+
+  /**
+   * 开始事务（可选，不支持事务的数据库可不实现）
+   */
+  beginTransaction?(): Promise<void>;
+
+  /**
+   * 提交事务（可选）
+   */
+  commit?(): Promise<void>;
+
+  /**
+   * 回滚事务（可选）
+   */
+  rollback?(): Promise<void>;
 }
 
 /**
