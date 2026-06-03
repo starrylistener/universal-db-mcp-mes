@@ -439,8 +439,10 @@ export class DatabaseService {
         'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
         'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
       ];
+      // 主表只存第一种语言（index=0）的内容
+      const mainMessage = Array.isArray(row.MESSAGE) ? row.MESSAGE[0] : row.MESSAGE;
       const mainValues = [
-        messageId, 2, row.MESSAGE_CODE, row.MESSAGE,
+        messageId, 2, row.MESSAGE_CODE, mainMessage,
         'N', 1, 1,
       ];
       const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
