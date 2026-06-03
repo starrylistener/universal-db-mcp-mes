@@ -56,7 +56,7 @@ export class DatabaseMCPServer {
         tools: [
           {
             name: 'execute_query',
-            description: '执行 SQL 查询或数据库命令。支持 SELECT、JOIN、聚合等查询操作。如果启用了写入模式，也可以执行 INSERT、UPDATE、DELETE 等操作。',
+            description: '执行 SQL 查询。仅支持 SELECT、JOIN、聚合等只读查询操作，INSERT/UPDATE/DELETE 已被系统硬限制禁止。',
             inputSchema: {
               type: 'object',
               properties: {
@@ -217,7 +217,9 @@ export class DatabaseMCPServer {
             description: (() => {
               const locales = this.errorTableConfig?.errorLocales || ['zh_CN', 'en_US'];
               const localesStr = locales.join(', ');
-              return `向 Hzero 平台注册新的错误码及其多语言提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具完成注册。系统会自动处理后台存储、ID 生成、多语言关联等全部细节，AI 只需提供业务内容。
+              return `向 Hzero 平台注册新的错误码及其多语言提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具完成注册。
+
+【重要 — 禁止查表】后台表映射、字段映射、ID 生成规则均已预配置完成，AI 完全不需要关心表名、表结构或列定义。禁止在调用本工具前使用 get_schema、get_table_info 或 execute_query 去查看任何相关表结构，也禁止向用户询问"表名是什么"或"需要插入到哪张表"。系统会自动处理后台存储、ID 生成、多语言关联等全部细节，AI 只需提供业务内容。
 
 【MESSAGE_CODE 生成规则】
 - 格式：模块名.功能描述_递增编号（全大写）。模块名与功能描述之间用点号分隔，功能描述内部单词用下划线连接，功能描述与3位数字编号之间用下划线分隔。
