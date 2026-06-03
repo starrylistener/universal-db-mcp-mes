@@ -412,16 +412,14 @@ export class DatabaseService {
     for (const row of data) {
       const messageId = await this.generateMessageId();
 
-      // 插入主表
+      // 插入主表（CREATED_BY 等审计字段由数据库默认值自动填充）
       const mainColumns = [
         'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
         'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
-        'CREATED_BY', 'CREATION_DATE', 'LAST_UPDATED_BY', 'LAST_UPDATE_DATE',
       ];
       const mainValues = [
         messageId, 2, row.MESSAGE_CODE, row.MESSAGE,
-        'N', null, 1,
-        null, null, null, null,
+        'N', 1, 1,
       ];
       const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
       const mainResult = await this.adapter.executeQuery(mainSql, mainValues);

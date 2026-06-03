@@ -74,7 +74,7 @@
 | `MESSAGE_CODE` | AI 传入 | 必填 |
 | `MESSAGE` | AI 传入 | 必填 |
 | `INITIAL_FLAG` | 系统固定 | `'N'` |
-| `CID` | 系统固定 | `null` |
+| `CID` | 系统固定 | `1` |
 | `OBJECT_VERSION_NUMBER` | 系统固定 | `1` |
 | `CREATED_BY` | 系统固定 | `null` |
 | `CREATION_DATE` | 系统固定 | `null` |
@@ -102,7 +102,7 @@ async insertExceptionData(
      - 否则：使用 `MESSAGE_ID = seq_value × 1000 + 1`；更新 `UPDATE mt_sys_sequence SET CURRENT_VALUE = seq_value + 1 WHERE NAME = ?`。
    - 查询与更新在同一个事务中执行，保证原子性。
    - **插入失败不回滚**：即使后续 INSERT 失败，`mt_sys_sequence` 的 `CURRENT_VALUE` 不回退，允许跳号。
-6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=null`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
+6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=1`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
 7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`），**同时生成主表和 tl 表的插入 SQL**。
 8. **主表与 tl 表在同一个事务中插入**：
    - 先插入主表 `mt_error_message`。

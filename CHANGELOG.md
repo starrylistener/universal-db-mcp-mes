@@ -2,6 +2,16 @@
 
 本文档记录 Universal DB MCP 的版本更新历史。
 
+## [mes-0.0.1] - 2026-06-03
+
+### 新增
+- **Hzero 错误信息插入工具** - 新增 `insert_exception_data` MCP 工具
+  - 当用户描述业务场景并提到报错、需要抛出错误、新增错误码等情境时，AI 应主动生成 MESSAGE_CODE 和 MESSAGE 并调用此工具
+  - 系统会自动从序列表生成 MESSAGE_ID，填充租户ID、审计字段、初始标识
+  - 同时向主表（如 `mt_error_message`）和多语言表（如 `mt_error_message_tl`）插入数据
+  - 支持通过 `--error-table`、`--error-tl-table`、`--error-seq-name`、`--error-database` 等 CLI 参数配置目标表
+  - 同步提供 REST API 端点 `POST /api/insert-exception-data`
+
 ## [2.14.0] - 2026
 
 ### 新增
