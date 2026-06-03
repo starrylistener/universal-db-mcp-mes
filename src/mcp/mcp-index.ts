@@ -6,7 +6,7 @@
 
 import { Command } from 'commander';
 import { DatabaseMCPServer } from './mcp-server.js';
-import type { DbConfig, PermissionType, PermissionMode } from '../types/adapter.js';
+import type { DbConfig, PermissionType, PermissionMode, ErrorTableConfig } from '../types/adapter.js';
 import { createAdapter, normalizeDbType } from '../utils/adapter-factory.js';
 import { resolvePermissions, formatPermissions } from '../utils/safety.js';
 
@@ -32,6 +32,12 @@ export async function startMcpServer(): Promise<void> {
     .option('--danger-allow-write', '启用完全写入模式（危险！等价于 --permission-mode=full）', false)
     .option('--permission-mode <mode>', '权限模式: safe(只读) | readwrite(读写不删) | full(完全控制)', 'safe')
     .option('--permissions <list>', '自定义权限列表，逗号分隔: read,insert,update,delete,ddl')
+    .option('--error-database <db>', '错误信息表所在数据库 / schema')
+    .option('--error-table <table>', '错误信息表名')
+    .option('--error-seq-name <name>', '序列表 NAME 值', 'mt_error_message_s')
+    .option('--error-tl-table <table>', '错误信息多语言表名')
+    .option('--error-multilang', '启用多语言模式', false)
+    .option('--error-locales <list>', '多语言列表，逗号分隔', 'zh_CN,en_US')
     .action(async (options) => {
       try {
         // 提取 graceful shutdown 逻辑为复用函数
@@ -69,6 +75,16 @@ export async function startMcpServer(): Promise<void> {
           process.stdin.on('end', () => gracefulShutdown('stdin-end'));
           process.stdin.on('close', () => gracefulShutdown('stdin-close'));
         }
+
+        // Build error table configuration
+        const errorTableConfig: ErrorTableConfig = {
+          errorDatabase: options.errorDatabase,
+          errorTable: options.errorTable,
+          errorSeqName: options.errorSeqName,
+          errorTlTable: options.errorTlTable,
+          errorMultilang: options.errorMultilang,
+          errorLocales: options.errorLocales.split(',').map((s: string) => s.trim()),
+        };
 
         if (options.type) {
           // === 有初始配置：和原来完全一样的逻辑 ===
@@ -120,7 +136,7 @@ export async function startMcpServer(): Promise<void> {
           console.error('');
 
           // Create server
-          const server = new DatabaseMCPServer(config);
+          const server = new DatabaseMCPServer(config, {}, errorTableConfig);
 
           // Create adapter using factory
           const adapter = createAdapter(config);
@@ -135,7 +151,7 @@ export async function startMcpServer(): Promise<void> {
           console.error('📡 无连接模式：未指定数据库类型，等待通过 connect_database 工具动态连接...');
           console.error('');
 
-          const server = new DatabaseMCPServer();
+          const server = new DatabaseMCPServer(undefined, {}, errorTableConfig);
           await server.start();
 
           setupGracefulShutdown(server);
