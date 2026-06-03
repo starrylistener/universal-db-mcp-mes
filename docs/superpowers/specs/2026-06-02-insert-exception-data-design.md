@@ -27,6 +27,10 @@
 |--------|----------|----------|------|
 | 错误信息表库 | `--error-database` | `ERROR_DATABASE` | 数据库名 / schema |
 | 错误信息表 | `--error-table` | `ERROR_TABLE` | 表名 |
+| 错误信息序列表 | `--error-seq-name` | `ERROR_SEQ_NAME` | `mt_sys_sequence` 中的 NAME 值，默认 `mt_error_message_s` |
+| 错误信息多语言表 | `--error-tl-table` | `ERROR_TL_TABLE` | 如 `mt_error_message_tl`，预留 |
+| 多语言开关 | `--error-multilang` | `ERROR_MULTILANG` | `true` / `false`，默认 `false`，预留 |
+| 多语言列表 | `--error-locales` | `ERROR_LOCALES` | 逗号分隔，默认 `zh_CN,en_US`，预留 |
 
 **加载优先级**（与现有机制保持一致）：
 `CLI 参数 > 环境变量 > 默认值`
@@ -64,7 +68,7 @@
 
 | 数据库字段 | 来源 | 值 |
 |-----------|------|-----|
-| `MESSAGE_ID` | 系统固定（占位） | `0`（后续改为从其他表取值） |
+| `MESSAGE_ID` | 系统生成 | 从 `mt_sys_sequence` 取 `CURRENT_VALUE × 1000 + 1`，并更新 `CURRENT_VALUE + 1` |
 | `TENANT_ID` | 系统固定 | `2` |
 | `MESSAGE_CODE` | AI 传入 | 必填 |
 | `MESSAGE` | AI 传入 | 必填 |
@@ -89,8 +93,14 @@ async insertExceptionData(
 2. 校验当前权限是否包含 `insert`，无权限则抛错。
 3. 校验 `data` 非空且为数组。
 4. 获取目标表的 Schema 信息（复用 `getTableInfo`），校验目标表是否存在。
-5. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`）。
-6. 执行插入，返回受影响的行数。
+5. **生成 `MESSAGE_ID`**：
+   - 查询 `SELECT CURRENT_VALUE FROM mt_sys_sequence WHERE NAME = ?`（`?` 为配置的序列表 NAME，默认 `mt_error_message_s`）。
+   - 计算 `MESSAGE_ID = CURRENT_VALUE × 1000 + 1`。
+   - 更新 `UPDATE mt_sys_sequence SET CURRENT_VALUE = CURRENT_VALUE + 1 WHERE NAME = ?`。
+   - 查询与更新在同一个事务中执行，保证原子性。
+6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=null`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
+7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`）。
+8. 执行插入，返回受影响的行数。
 
 **批量插入优化**：
 - 单条 SQL 插入多行：`INSERT INTO table (col1, col2) VALUES (?, ?), (?, ?), ...`
@@ -164,8 +174,8 @@ POST /api/insert-exception-data
 |------|---------|------|
 | `src/types/adapter.ts` | 修改 | 新增 `InsertExceptionDataResult` 接口 |
 | `src/types/http.ts` | 修改 | 新增 `InsertExceptionDataRequest`、`InsertExceptionDataResponse` 接口 |
-| `src/utils/config-loader.ts` | 修改 | 新增 `ERROR_DATABASE`、`ERROR_TABLE` 环境变量加载逻辑 |
-| `src/mcp/mcp-index.ts` | 修改 | 新增 `--error-database`、`--error-table` CLI 参数解析 |
+| `src/utils/config-loader.ts` | 修改 | 新增 `ERROR_DATABASE`、`ERROR_TABLE`、`ERROR_SEQ_NAME`、`ERROR_TL_TABLE`、`ERROR_MULTILANG`、`ERROR_LOCALES` 环境变量加载逻辑 |
+| `src/mcp/mcp-index.ts` | 修改 | 新增 `--error-database`、`--error-table`、`--error-seq-name`、`--error-tl-table`、`--error-multilang`、`--error-locales` CLI 参数解析 |
 | `src/core/database-service.ts` | 修改 | 新增 `insertExceptionData` 方法 |
 | `src/mcp/mcp-server.ts` | 修改 | 新增 `insert_exception_data` 工具定义和调用处理 |
 | `src/http/routes/query.ts` | 修改 | 新增 `/api/insert-exception-data` 端点 |
@@ -185,8 +195,9 @@ AI 调用 insert_exception_data
 │  DatabaseService│  1. 检查 ERROR_TABLE 配置
 │                 │  2. 检查 insert 权限
 │                 │  3. 获取表 Schema，确认表存在
-│                 │  4. 为每行数据补充系统字段
-│                 │  5. 生成参数化 INSERT SQL
+│                 │  4. 从 mt_sys_sequence 生成 MESSAGE_ID
+│                 │  5. 为每行数据补充系统字段
+│                 │  6. 生成参数化 INSERT SQL
 └────────┬────────┘
          ▼
 ┌─────────────────┐
@@ -217,7 +228,6 @@ AI 调用 insert_exception_data
 
 ## 非目标（YAGNI）
 
-- 不实现 `MESSAGE_ID` 的自动取值（待后续确定逻辑后补充）。
 - 不实现多语言场景（dl 表插入，待第二阶段）。
 - 不实现通用的 `insert_data`（任意表插入）。
 - 不实现 `update_exception_data` 或 `delete_exception_data`。
