@@ -10,3 +10,4 @@ coverage/
 .claude/worktrees/
 TODO_insert_exception_data.md
 *.tgz
+.mcp.json
