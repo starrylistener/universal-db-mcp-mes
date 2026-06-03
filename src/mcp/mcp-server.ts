@@ -217,7 +217,7 @@ export class DatabaseMCPServer {
             description: (() => {
               const locales = this.errorTableConfig?.errorLocales || ['zh_CN', 'en_US'];
               const localesStr = locales.join(', ');
-              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。目标错误信息表和多语言表已由系统管理员预先配置好，AI 无需关心表名，只需生成业务内容并调用此工具。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。
+              return `向 Hzero 平台注册新的错误码及其多语言提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具完成注册。系统会自动处理后台存储、ID 生成、多语言关联等全部细节，AI 只需提供业务内容。
 
 【MESSAGE_CODE 生成规则】
 - 格式：模块名.功能名.递增编号（全大写，点号连接）。
