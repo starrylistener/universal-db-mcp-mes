@@ -4,8 +4,8 @@
  * Shared between MCP and HTTP modes
  */
 
-import type { DbAdapter, DbConfig, QueryResult, SchemaInfo, TableInfo, EnumValuesResult, SampleDataResult } from '../types/adapter.js';
-import { validateQuery } from '../utils/safety.js';
+import type { DbAdapter, DbConfig, QueryResult, SchemaInfo, TableInfo, EnumValuesResult, SampleDataResult, ErrorTableConfig, InsertExceptionDataResult } from '../types/adapter.js';
+import { validateQuery, resolvePermissions } from '../utils/safety.js';
 import { SchemaEnhancer, SchemaEnhancerConfig } from '../utils/schema-enhancer.js';
 import { DataMasker, createDataMasker } from '../utils/data-masking.js';
 
@@ -69,17 +69,22 @@ export class DatabaseService {
   // 数据脱敏器
   private dataMasker: DataMasker;
 
+  // 错误信息表配置
+  private errorTableConfig: ErrorTableConfig | undefined;
+
   constructor(
     adapter: DbAdapter,
     config: DbConfig,
     cacheConfig?: Partial<SchemaCacheConfig>,
-    enhancerConfig?: Partial<SchemaEnhancerConfig>
+    enhancerConfig?: Partial<SchemaEnhancerConfig>,
+    errorTableConfig?: ErrorTableConfig
   ) {
     this.adapter = adapter;
     this.config = config;
     this.cacheConfig = { ...DEFAULT_CACHE_CONFIG, ...cacheConfig };
     this.schemaEnhancer = new SchemaEnhancer(enhancerConfig);
     this.dataMasker = createDataMasker(true);
+    this.errorTableConfig = errorTableConfig;
   }
 
   /**
@@ -311,6 +316,134 @@ export class DatabaseService {
    */
   getConfig(): DbConfig {
     return this.config;
+  }
+
+  /**
+   * 检查是否有插入权限
+   */
+  private hasInsertPermission(): boolean {
+    const permissions = resolvePermissions(this.config);
+    return permissions.includes('insert');
+  }
+
+  /**
+   * 生成 MESSAGE_ID
+   * 从 mt_sys_sequence 取 CURRENT_VALUE，与 message 表 MAX(MESSAGE_ID) 比较取大
+   */
+  private async generateMessageId(): Promise<number> {
+    const cfg = this.errorTableConfig;
+    if (!cfg?.errorTable || !cfg?.errorSeqName) {
+      throw new Error('未配置目标错误信息表或序列表');
+    }
+
+    const mainTableRef = cfg.errorDatabase
+      ? `${cfg.errorDatabase}.${cfg.errorTable}`
+      : cfg.errorTable;
+
+    // 1. 查询 message 表最大值
+    const maxQuery = `SELECT MAX(MESSAGE_ID) as max_id FROM ${this.quoteIdentifier(mainTableRef)}`;
+    const maxResult = await this.adapter.executeQuery(maxQuery);
+    const maxId = (maxResult.rows[0]?.max_id as number) || 0;
+    const maxBase = Math.floor(maxId / 1000);
+
+    // 2. 查询序列表
+    const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier('mt_sys_sequence')} WHERE NAME = ?`;
+    const seqResult = await this.adapter.executeQuery(seqQuery, [cfg.errorSeqName]);
+    const seqValue = (seqResult.rows[0]?.CURRENT_VALUE as number) || 0;
+
+    // 3. 比较取大
+    let base: number;
+    if (maxBase >= seqValue) {
+      base = maxBase + 1;
+      const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
+      await this.adapter.executeQuery(updateSeq, [base, cfg.errorSeqName]);
+    } else {
+      base = seqValue;
+      const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
+      await this.adapter.executeQuery(updateSeq, [seqValue + 1, cfg.errorSeqName]);
+    }
+
+    return base * 1000 + 1;
+  }
+
+  /**
+   * 构建 INSERT SQL
+   */
+  private buildInsertSql(table: string, columns: string[]): string {
+    const quotedTable = this.quoteIdentifier(table);
+    const quotedColumns = columns.map(c => this.quoteIdentifier(c)).join(', ');
+    const placeholders = columns.map(() => '?').join(', ');
+    return `INSERT INTO ${quotedTable} (${quotedColumns}) VALUES (${placeholders})`;
+  }
+
+  /**
+   * 向错误信息表插入数据
+   */
+  async insertExceptionData(
+    data: Array<{ MESSAGE_CODE: string; MESSAGE: string }>
+  ): Promise<InsertExceptionDataResult> {
+    const cfg = this.errorTableConfig;
+    if (!cfg?.errorTable || !cfg?.errorTlTable) {
+      throw new Error('未配置目标错误信息表或多语言表。请通过 --error-table 和 --error-tl-table 参数指定');
+    }
+
+    if (!this.hasInsertPermission()) {
+      throw new Error('❌ 当前权限模式不允许插入操作，需要 insert 权限');
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new Error('❌ data 必须是非空数组');
+    }
+
+    if (data.length > 1000) {
+      throw new Error('❌ 单次插入最多 1000 行');
+    }
+
+    const mainTableRef = cfg.errorDatabase
+      ? `${cfg.errorDatabase}.${cfg.errorTable}`
+      : cfg.errorTable;
+    const tlTableRef = cfg.errorDatabase
+      ? `${cfg.errorDatabase}.${cfg.errorTlTable}`
+      : cfg.errorTlTable;
+    const locales = cfg.errorLocales || ['zh_CN', 'en_US'];
+
+    let totalAffectedRows = 0;
+
+    for (const row of data) {
+      const messageId = await this.generateMessageId();
+
+      // 插入主表
+      const mainColumns = [
+        'MESSAGE_ID', 'TENANT_ID', 'MESSAGE_CODE', 'MESSAGE',
+        'INITIAL_FLAG', 'CID', 'OBJECT_VERSION_NUMBER',
+        'CREATED_BY', 'CREATION_DATE', 'LAST_UPDATED_BY', 'LAST_UPDATE_DATE',
+      ];
+      const mainValues = [
+        messageId, 2, row.MESSAGE_CODE, row.MESSAGE,
+        'N', null, 1,
+        null, null, null, null,
+      ];
+      const mainSql = this.buildInsertSql(mainTableRef, mainColumns);
+      const mainResult = await this.adapter.executeQuery(mainSql, mainValues);
+      totalAffectedRows += mainResult.affectedRows || 0;
+
+      // 插入 tl 表（批量每种语言）
+      const tlColumns = ['MESSAGE_ID', 'LANG', 'MESSAGE'];
+      const tlValues: unknown[] = [];
+      const tlPlaceholders: string[] = [];
+
+      for (const locale of locales) {
+        tlValues.push(messageId, locale, row.MESSAGE);
+        tlPlaceholders.push(`(${tlColumns.map(() => '?').join(', ')})`);
+      }
+
+      const tlQuotedTable = this.quoteIdentifier(tlTableRef);
+      const tlQuotedColumns = tlColumns.map(c => this.quoteIdentifier(c)).join(', ');
+      const tlSql = `INSERT INTO ${tlQuotedTable} (${tlQuotedColumns}) VALUES ${tlPlaceholders.join(', ')}`;
+      await this.adapter.executeQuery(tlSql, tlValues);
+    }
+
+    return { affectedRows: totalAffectedRows };
   }
 
   /**
