@@ -425,6 +425,13 @@ export class DatabaseService {
     let totalAffectedRows = 0;
 
     for (const row of data) {
+      // 校验 MESSAGE 数组长度
+      if (Array.isArray(row.MESSAGE) && row.MESSAGE.length !== locales.length) {
+        throw new Error(
+          `❌ MESSAGE 数组长度 (${row.MESSAGE.length}) 与配置语言数量 (${locales.length}) 不匹配。当前语言顺序：${locales.join(', ')}`
+        );
+      }
+
       const messageId = await this.generateMessageId();
 
       // 插入主表（CREATED_BY 等审计字段由数据库默认值自动填充）

@@ -217,7 +217,12 @@ export class DatabaseMCPServer {
             description: (() => {
               const locales = this.errorTableConfig?.errorLocales || ['zh_CN', 'en_US'];
               const localesStr = locales.join(', ');
-              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"需要抛出一个错误"、"新增错误码"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。MESSAGE 可以是字符串（所有语言使用相同内容）或字符串数组（按顺序分别对应：${localesStr}）。`;
+              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"需要抛出一个错误"、"新增错误码"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。
+
+【多语言传入规则】当前配置的语言顺序为：${localesStr}。
+- 所有语言内容相同：MESSAGE 传字符串即可。
+- 各语言内容不同：MESSAGE 必须传字符串数组，数组长度必须等于语言数量（${locales.length}个），且严格按 ${localesStr} 的顺序一一对应。
+- 示例：${locales.length === 3 ? '["连接超时", "Connection timeout", "Hết thởi gian chờ"]' : '["连接超时", "Connection timeout"]'}。缺失语言会自动回退到数组第一项。`;
             })(),
             inputSchema: {
               type: 'object',
@@ -232,7 +237,7 @@ export class DatabaseMCPServer {
                       MESSAGE: {
                         anyOf: [
                           { type: 'string', description: '单语言：所有语言使用相同内容' },
-                          { type: 'array', items: { type: 'string' }, description: '多语言翻译：按配置语言顺序传入' },
+                          { type: 'array', items: { type: 'string' }, description: `多语言翻译：必须严格按当前配置语言顺序传入，数组长度必须等于语言数量` },
                         ],
                         description: '消息内容，varchar(1000)，必填',
                       },
