@@ -94,10 +94,13 @@ async insertExceptionData(
 3. 校验 `data` 非空且为数组。
 4. 获取目标表的 Schema 信息（复用 `getTableInfo`），校验目标表是否存在。
 5. **生成 `MESSAGE_ID`**：
-   - 查询 `SELECT CURRENT_VALUE FROM mt_sys_sequence WHERE NAME = ?`（`?` 为配置的序列表 NAME，默认 `mt_error_message_s`）。
-   - 计算 `MESSAGE_ID = CURRENT_VALUE × 1000 + 1`。
-   - 更新 `UPDATE mt_sys_sequence SET CURRENT_VALUE = CURRENT_VALUE + 1 WHERE NAME = ?`。
+   - 查询 message 表最大值：`SELECT MAX(MESSAGE_ID) FROM <error_table>`，计算 `max_base = floor(max_id / 1000)`（表为空时 `max_base = 0`）。
+   - 查询序列表：`SELECT CURRENT_VALUE FROM mt_sys_sequence WHERE NAME = ?`（`?` 为配置的序列表 NAME，默认 `mt_error_message_s`）。
+   - **比较取大**：
+     - 若 `max_base >= seq_value`：说明 message 表领先，使用 `base = max_base + 1`；`MESSAGE_ID = base × 1000 + 1`；回写 `UPDATE mt_sys_sequence SET CURRENT_VALUE = base WHERE NAME = ?`。
+     - 否则：使用 `MESSAGE_ID = seq_value × 1000 + 1`；更新 `UPDATE mt_sys_sequence SET CURRENT_VALUE = seq_value + 1 WHERE NAME = ?`。
    - 查询与更新在同一个事务中执行，保证原子性。
+   - **插入失败不回滚**：即使后续 INSERT 失败，`mt_sys_sequence` 的 `CURRENT_VALUE` 不回退，允许跳号。
 6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=null`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
 7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`）。
 8. 执行插入，返回受影响的行数。
