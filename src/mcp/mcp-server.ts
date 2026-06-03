@@ -212,6 +212,28 @@ export class DatabaseMCPServer {
               properties: {},
             },
           },
+          {
+            name: 'insert_exception_data',
+            description: '向配置的错误信息表及其多语言表插入数据。AI 只需传入 MESSAGE_CODE 和 MESSAGE，系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                data: {
+                  type: 'array',
+                  description: '要插入的错误信息数据行',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      MESSAGE_CODE: { type: 'string', description: '消息编码，varchar(255)，必填' },
+                      MESSAGE: { type: 'string', description: '消息内容，varchar(1000)，必填' },
+                    },
+                    required: ['MESSAGE_CODE', 'MESSAGE'],
+                  },
+                },
+              },
+              required: ['data'],
+            },
+          },
         ],
       };
     });
@@ -369,6 +391,27 @@ export class DatabaseMCPServer {
                 type: 'text',
                 text: JSON.stringify(status, null, 2),
               }],
+            };
+          }
+
+          case 'insert_exception_data': {
+            const { data } = args as { data: Array<{ MESSAGE_CODE: string; MESSAGE: string }> };
+
+            console.error(`📝 插入错误信息数据: ${data.length} 行`);
+
+            const result = await this.databaseService.insertExceptionData(data);
+
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    success: true,
+                    affectedRows: result.affectedRows,
+                    message: `成功插入 ${result.affectedRows} 条错误信息`,
+                  }, null, 2),
+                },
+              ],
             };
           }
 
