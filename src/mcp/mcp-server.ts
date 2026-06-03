@@ -219,9 +219,14 @@ export class DatabaseMCPServer {
               const localesStr = locales.join(', ');
               return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。目标错误信息表和多语言表已由系统管理员预先配置好，AI 无需关心表名，只需生成业务内容并调用此工具。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。
 
+【MESSAGE_CODE 生成规则】
+- 格式：模块名_功能名_递增编号（全大写，下划线连接，禁止使用点号）。
+- 示例：HWM_AFTER_SALES_PARTS_PACK_001、HWM_ORDER_SUBMIT_002。
+- AI 应根据业务上下文、类名或历史沿用规则，生成 2-3 个候选编码供用户选择，用户确认后再调用本工具插入。
+
 【多语言传入规则】当前配置的语言顺序为：${localesStr}。
-- 所有语言内容相同：MESSAGE 传字符串即可。
-- 各语言内容不同：MESSAGE 必须传字符串数组，数组长度必须等于语言数量（${locales.length}个），且严格按 ${localesStr} 的顺序一一对应。
+- 默认行为：MESSAGE 应传字符串数组，为每种语言提供对应翻译。数组长度必须等于语言数量（${locales.length}个），且严格按 ${localesStr} 的顺序一一对应。
+- 例外：仅当用户明确表示"只用中文"或"所有语言相同"时，MESSAGE 才可传单个字符串。
 - 示例：${locales.length === 3 ? '["连接超时", "Connection timeout", "Hết thởi gian chờ"]' : '["连接超时", "Connection timeout"]'}。缺失语言会自动回退到数组第一项。`;
             })(),
             inputSchema: {
