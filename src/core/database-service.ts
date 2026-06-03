@@ -339,31 +339,40 @@ export class DatabaseService {
     const mainTableRef = cfg.errorDatabase
       ? `${cfg.errorDatabase}.${cfg.errorTable}`
       : cfg.errorTable;
+    const suffix = cfg.errorSeqSuffix || '001';
+    const divisor = Math.pow(10, suffix.length);
 
     // 1. 查询 message 表最大值
     const maxQuery = `SELECT MAX(MESSAGE_ID) as max_id FROM ${this.quoteIdentifier(mainTableRef)}`;
     const maxResult = await this.adapter.executeQuery(maxQuery);
     const maxId = (maxResult.rows[0]?.max_id as number) || 0;
-    const maxBase = Math.floor(maxId / 1000);
+    const maxBase = Math.floor(maxId / divisor);
 
     // 2. 查询序列表
     const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier('mt_sys_sequence')} WHERE NAME = ?`;
     const seqResult = await this.adapter.executeQuery(seqQuery, [cfg.errorSeqName]);
     const seqValue = (seqResult.rows[0]?.CURRENT_VALUE as number) || 0;
 
-    // 3. 比较取大
+    // 3. 比较取大，统一先 +1
     let base: number;
     if (maxBase >= seqValue) {
       base = maxBase + 1;
-      const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
-      await this.adapter.executeQuery(updateSeq, [base, cfg.errorSeqName]);
     } else {
-      base = seqValue;
-      const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
-      await this.adapter.executeQuery(updateSeq, [seqValue + 1, cfg.errorSeqName]);
+      base = seqValue + 1;
     }
 
-    return base * 1000 + 1;
+    // 4. 更新序列表
+    const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
+    const updateResult = await this.adapter.executeQuery(updateSeq, [base, cfg.errorSeqName]);
+
+    // 5. 检查更新是否生效，为 0 则插入新记录
+    if ((updateResult.affectedRows || 0) === 0) {
+      const insertSeq = `INSERT INTO ${this.quoteIdentifier('mt_sys_sequence')} (NAME, CURRENT_VALUE) VALUES (?, ?)`;
+      await this.adapter.executeQuery(insertSeq, [cfg.errorSeqName, base]);
+    }
+
+    // 6. 字符串拼接生成 MESSAGE_ID
+    return parseInt(`${base}${suffix}`, 10);
   }
 
   /**
@@ -380,7 +389,7 @@ export class DatabaseService {
    * 向错误信息表插入数据
    */
   async insertExceptionData(
-    data: Array<{ MESSAGE_CODE: string; MESSAGE: string }>
+    data: Array<{ MESSAGE_CODE: string; MESSAGE: string | string[] }>
   ): Promise<InsertExceptionDataResult> {
     const cfg = this.errorTableConfig;
     if (!cfg?.errorTable || !cfg?.errorTlTable) {
@@ -430,8 +439,11 @@ export class DatabaseService {
       const tlValues: unknown[] = [];
       const tlPlaceholders: string[] = [];
 
-      for (const locale of locales) {
-        tlValues.push(messageId, locale, row.MESSAGE);
+      for (const [index, locale] of locales.entries()) {
+        const message = Array.isArray(row.MESSAGE)
+          ? (row.MESSAGE[index] ?? row.MESSAGE[0])
+          : row.MESSAGE;
+        tlValues.push(messageId, locale, message);
         tlPlaceholders.push(`(${tlColumns.map(() => '?').join(', ')})`);
       }
 
