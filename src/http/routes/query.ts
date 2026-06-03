@@ -100,6 +100,22 @@ export async function setupQueryRoutes(
       // Get database service
       const service = connectionManager.getService(sessionId);
 
+      // Hard restriction: /api/execute only allows SELECT
+      if (!/^\s*SELECT\b/i.test(query.trim())) {
+        reply.code(400);
+        return {
+          success: false,
+          error: {
+            code: 'INVALID_QUERY',
+            message: '❌ /api/execute 仅支持 SELECT 查询',
+          },
+          metadata: {
+            timestamp: new Date().toISOString(),
+            requestId: request.id,
+          },
+        };
+      }
+
       // Execute query (validation happens in service)
       const result = await service.executeQuery(query, params);
 
@@ -149,7 +165,12 @@ export async function setupQueryRoutes(
               required: ['MESSAGE_CODE', 'MESSAGE'],
               properties: {
                 MESSAGE_CODE: { type: 'string' },
-                MESSAGE: { type: 'string' },
+                MESSAGE: {
+                  anyOf: [
+                    { type: 'string' },
+                    { type: 'array', items: { type: 'string' } },
+                  ],
+                },
               },
             },
           },

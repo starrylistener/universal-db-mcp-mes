@@ -94,6 +94,12 @@ export class DatabaseService {
     // Validate query safety
     this.validateQuery(query);
 
+    // Hard restriction: execute_query only allows SELECT
+    const trimmedQuery = query.trim();
+    if (!/^\s*SELECT\b/i.test(trimmedQuery)) {
+      throw new Error('❌ execute_query 仅支持 SELECT 查询');
+    }
+
     // Execute query
     const result = await this.adapter.executeQuery(query, params);
 
