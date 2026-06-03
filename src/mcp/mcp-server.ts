@@ -12,7 +12,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-import type { DbAdapter, DbConfig } from '../types/adapter.js';
+import type { DbAdapter, DbConfig, ErrorTableConfig, InsertExceptionDataResult } from '../types/adapter.js';
 import { DatabaseService, SchemaCacheConfig } from '../core/database-service.js';
 import { createAdapter, normalizeDbType } from '../utils/adapter-factory.js';
 
@@ -25,10 +25,12 @@ export class DatabaseMCPServer {
   private config: DbConfig | null;
   private databaseService: DatabaseService | null = null;
   private cacheConfig: Partial<SchemaCacheConfig>;
+  private errorTableConfig: ErrorTableConfig | undefined;
 
-  constructor(config?: DbConfig, cacheConfig?: Partial<SchemaCacheConfig>) {
+  constructor(config?: DbConfig, cacheConfig?: Partial<SchemaCacheConfig>, errorTableConfig?: ErrorTableConfig) {
     this.config = config || null;
     this.cacheConfig = cacheConfig || {};
+    this.errorTableConfig = errorTableConfig;
     this.server = new Server(
       {
         name: 'universal-db-mcp',
@@ -268,7 +270,7 @@ export class DatabaseMCPServer {
 
             this.adapter = newAdapter;
             this.config = newConfig;
-            this.databaseService = new DatabaseService(newAdapter, newConfig, this.cacheConfig);
+            this.databaseService = new DatabaseService(newAdapter, newConfig, this.cacheConfig, undefined, this.errorTableConfig);
 
             const connInfo = newConfig.type === 'sqlite'
               ? `SQLite: ${newConfig.filePath}`
@@ -538,7 +540,7 @@ export class DatabaseMCPServer {
   setAdapter(adapter: DbAdapter): void {
     this.adapter = adapter;
     if (this.config) {
-      this.databaseService = new DatabaseService(adapter, this.config, this.cacheConfig);
+      this.databaseService = new DatabaseService(adapter, this.config, this.cacheConfig, undefined, this.errorTableConfig);
     }
   }
 
