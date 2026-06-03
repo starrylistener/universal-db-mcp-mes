@@ -245,6 +245,8 @@ export interface ErrorTableConfig {
   errorMultilang?: boolean;
   /** 语言列表 */
   errorLocales?: string[];
+  /** 序列表 ID 后缀 */
+  errorSeqSuffix?: string;
 }
 
 /**

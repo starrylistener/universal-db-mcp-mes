@@ -205,7 +205,7 @@ export interface InsertExceptionDataRequest {
   sessionId: string;
   data: Array<{
     MESSAGE_CODE: string;
-    MESSAGE: string;
+    MESSAGE: string | string[];
   }>;
 }
 
