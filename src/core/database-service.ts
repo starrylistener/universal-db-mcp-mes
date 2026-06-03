@@ -354,8 +354,12 @@ export class DatabaseService {
     const maxId = (maxResult.rows[0]?.max_id as number) || 0;
     const maxBase = Math.floor(maxId / divisor);
 
+    const seqTableRef = cfg.errorDatabase
+      ? `${cfg.errorDatabase}.mt_sys_sequence`
+      : 'mt_sys_sequence';
+
     // 2. 查询序列表
-    const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier('mt_sys_sequence')} WHERE NAME = ?`;
+    const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier(seqTableRef)} WHERE NAME = ?`;
     const seqResult = await this.adapter.executeQuery(seqQuery, [cfg.errorSeqName]);
     const seqValue = (seqResult.rows[0]?.CURRENT_VALUE as number) || 0;
 
@@ -368,12 +372,12 @@ export class DatabaseService {
     }
 
     // 4. 更新序列表
-    const updateSeq = `UPDATE ${this.quoteIdentifier('mt_sys_sequence')} SET CURRENT_VALUE = ? WHERE NAME = ?`;
+    const updateSeq = `UPDATE ${this.quoteIdentifier(seqTableRef)} SET CURRENT_VALUE = ? WHERE NAME = ?`;
     const updateResult = await this.adapter.executeQuery(updateSeq, [base, cfg.errorSeqName]);
 
     // 5. 检查更新是否生效，为 0 则插入新记录
     if ((updateResult.affectedRows || 0) === 0) {
-      const insertSeq = `INSERT INTO ${this.quoteIdentifier('mt_sys_sequence')} (NAME, CURRENT_VALUE) VALUES (?, ?)`;
+      const insertSeq = `INSERT INTO ${this.quoteIdentifier(seqTableRef)} (NAME, CURRENT_VALUE) VALUES (?, ?)`;
       await this.adapter.executeQuery(insertSeq, [cfg.errorSeqName, base]);
     }
 
