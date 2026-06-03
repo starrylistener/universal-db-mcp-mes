@@ -12,7 +12,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-import type { DbAdapter, DbConfig, ErrorTableConfig, InsertExceptionDataResult } from '../types/adapter.js';
+import type { DbAdapter, DbConfig, ErrorTableConfig } from '../types/adapter.js';
 import { DatabaseService, SchemaCacheConfig } from '../core/database-service.js';
 import { createAdapter, normalizeDbType } from '../utils/adapter-factory.js';
 
@@ -394,6 +394,16 @@ export class DatabaseMCPServer {
             };
           }
 
+          default:
+            break;
+        }
+
+        // 以下 tool 需要数据库已连接
+        if (!this.databaseService) {
+          throw new Error('数据库未连接。请先使用 connect_database 工具连接数据库。');
+        }
+
+        switch (name) {
           case 'insert_exception_data': {
             const { data } = args as { data: Array<{ MESSAGE_CODE: string; MESSAGE: string }> };
 
@@ -415,16 +425,6 @@ export class DatabaseMCPServer {
             };
           }
 
-          default:
-            break;
-        }
-
-        // 以下 tool 需要数据库已连接
-        if (!this.databaseService) {
-          throw new Error('数据库未连接。请先使用 connect_database 工具连接数据库。');
-        }
-
-        switch (name) {
           case 'execute_query': {
             const { query, params } = args as { query: string; params?: unknown[] };
 

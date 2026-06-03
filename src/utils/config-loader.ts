@@ -6,7 +6,6 @@
 
 import { config as dotenvConfig } from 'dotenv';
 import type { AppConfig, HttpConfig } from '../types/http.js';
-import type { ErrorTableConfig } from '../types/adapter.js';
 
 // Load environment variables from .env file
 dotenvConfig();
