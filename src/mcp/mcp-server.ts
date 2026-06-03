@@ -217,7 +217,7 @@ export class DatabaseMCPServer {
             description: (() => {
               const locales = this.errorTableConfig?.errorLocales || ['zh_CN', 'en_US'];
               const localesStr = locales.join(', ');
-              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。
+              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"报错xxxx"、"出现错误/异常/失败"、"需要抛出一个错误"、"新增错误码"、"消息维护"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。
 
 【多语言传入规则】当前配置的语言顺序为：${localesStr}。
 - 所有语言内容相同：MESSAGE 传字符串即可。
