@@ -2,7 +2,7 @@
 
 ## 概述
 
-在 `universal-db-mcp` 项目中新增一个定制化 MCP 工具 `insert_exception_data`，用于向配置好的**错误信息表**插入 AI 生成的数据。当前阶段仅支持非多语言场景。
+在 `universal-db-mcp` 项目中新增一个定制化 MCP 工具 `insert_exception_data`，用于向配置好的**错误信息表及其多语言表**插入 AI 生成的数据。当前阶段 tl 表各语言记录使用相同的 message（AI 传入的内容）。
 
 ## 背景与目标
 
@@ -15,7 +15,8 @@
 1. 新增 MCP 工具 `insert_exception_data`，AI 只需传入 `MESSAGE_CODE` 和 `MESSAGE`。
 2. 目标库表通过 CLI 参数或环境变量配置，实现业务解耦。
 3. 系统字段（租户ID、审计字段、初始标识等）由工具内部自动填充，AI 无感知。
-4. 同步提供 REST API 端点，供 HTTP 模式使用。
+4. **tl 表无论多语言开关状态都必须插入**，当前阶段各语言使用相同的 message。
+5. 同步提供 REST API 端点，供 HTTP 模式使用。
 
 ## 设计细节
 
@@ -102,8 +103,14 @@ async insertExceptionData(
    - 查询与更新在同一个事务中执行，保证原子性。
    - **插入失败不回滚**：即使后续 INSERT 失败，`mt_sys_sequence` 的 `CURRENT_VALUE` 不回退，允许跳号。
 6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=null`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
-7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`）。
-8. 执行插入，返回受影响的行数。
+7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`），**同时生成主表和 tl 表的插入 SQL**。
+8. **主表与 tl 表在同一个事务中插入**：
+   - 先插入主表 `mt_error_message`。
+   - 再为 `ERROR_LOCALES` 配置的每种语言（默认 `zh_CN,en_US`）插入 tl 表 `mt_error_message_tl`：
+     - `MESSAGE_ID` = 同主表
+     - `LANG` = 语言代码
+     - `MESSAGE` = AI 传入的 message（当前阶段所有语言相同）。
+9. 提交事务，返回主表受影响的行数。
 
 **批量插入优化**：
 - 单条 SQL 插入多行：`INSERT INTO table (col1, col2) VALUES (?, ?), (?, ?), ...`
@@ -150,9 +157,11 @@ POST /api/insert-exception-data
 | 场景 | 错误提示 |
 |------|---------|
 | 未配置目标表 | `❌ 未配置目标错误信息表。请通过 --error-table CLI 参数或 ERROR_TABLE 环境变量指定` |
+| 未配置 tl 表 | `❌ 未配置目标多语言表。请通过 --error-tl-table CLI 参数或 ERROR_TL_TABLE 环境变量指定` |
 | 无 `insert` 权限 | `❌ 当前权限模式不允许插入操作，需要 insert 权限` |
 | `data` 为空或不是数组 | `❌ data 必须是非空数组` |
 | 目标表不存在 | `❌ 目标表 "xxx" 不存在` |
+| tl 表不存在 | `❌ 多语言表 "xxx" 不存在` |
 | 数据库约束失败 | 透传数据库原始错误信息 |
 | 插入失败 | 透传数据库原始错误信息 |
 
@@ -195,16 +204,16 @@ AI 调用 insert_exception_data
 └────────┬────────┘
          ▼
 ┌─────────────────┐
-│  DatabaseService│  1. 检查 ERROR_TABLE 配置
+│  DatabaseService│  1. 检查 ERROR_TABLE / ERROR_TL_TABLE 配置
 │                 │  2. 检查 insert 权限
-│                 │  3. 获取表 Schema，确认表存在
+│                 │  3. 获取表 Schema，确认主表和 tl 表存在
 │                 │  4. 从 mt_sys_sequence 生成 MESSAGE_ID
 │                 │  5. 为每行数据补充系统字段
-│                 │  6. 生成参数化 INSERT SQL
+│                 │  6. 生成主表和 tl 表的参数化 INSERT SQL
 └────────┬────────┘
          ▼
 ┌─────────────────┐
-│  数据库适配器     │  执行参数化查询
+│  数据库适配器     │  同一事务内插入主表 + tl 表
 │  (17种数据库)   │
 └────────┬────────┘
          ▼
@@ -219,11 +228,14 @@ AI 调用 insert_exception_data
    - 空 data 数组校验
    - 批量插入（单行、多行）
    - 系统字段是否正确填充
+   - MESSAGE_ID 生成逻辑（序列表 vs message 表最大值）
+   - tl 表是否正确插入（按配置语言数量 × data 行数）
    - 不同数据库的引号风格
 
 2. **集成测试**：MCP 工具端到端
    - 通过 MCP Inspector 调用 `insert_exception_data`
-   - 验证数据是否正确写入数据库
+   - 验证主表数据是否正确写入
+   - 验证 tl 表各语言记录是否正确写入
    - 验证系统字段是否自动填充
 
 3. **REST API 测试**：
@@ -231,7 +243,7 @@ AI 调用 insert_exception_data
 
 ## 非目标（YAGNI）
 
-- 不实现多语言场景（dl 表插入，待第二阶段）。
+- 不实现多语言开关为"开"的场景（tl 表各语言插入不同 message，待第二阶段）。
 - 不实现通用的 `insert_data`（任意表插入）。
 - 不实现 `update_exception_data` 或 `delete_exception_data`。
 - 不实现数据转换/映射（如 AI 传字符串，数据库要求整数）。
