@@ -4,7 +4,7 @@
  */
 
 import type { FastifyInstance } from 'fastify';
-import type { QueryRequest, ExecuteRequest, ApiResponse, HttpQueryResult } from '../../types/http.js';
+import type { QueryRequest, ExecuteRequest, ApiResponse, HttpQueryResult, InsertExceptionDataRequest, InsertExceptionDataResponse } from '../../types/http.js';
 import type { QueryResult } from '../../types/adapter.js';
 import { ConnectionManager } from '../../core/connection-manager.js';
 
@@ -119,6 +119,67 @@ export async function setupQueryRoutes(
         error: {
           code: 'EXECUTE_FAILED',
           message: error instanceof Error ? error.message : 'Failed to execute operation',
+        },
+        metadata: {
+          timestamp: new Date().toISOString(),
+          requestId: request.id,
+        },
+      };
+    }
+  });
+
+  /**
+   * POST /api/insert-exception-data
+   * Insert exception data into configured error table and tl table
+   */
+  fastify.post<{
+    Body: InsertExceptionDataRequest;
+    Reply: ApiResponse<InsertExceptionDataResponse>;
+  }>('/api/insert-exception-data', {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['sessionId', 'data'],
+        properties: {
+          sessionId: { type: 'string' },
+          data: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['MESSAGE_CODE', 'MESSAGE'],
+              properties: {
+                MESSAGE_CODE: { type: 'string' },
+                MESSAGE: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    },
+  }, async (request, reply) => {
+    try {
+      const { sessionId, data } = request.body;
+
+      const service = connectionManager.getService(sessionId);
+      const result = await service.insertExceptionData(data);
+
+      return {
+        success: true,
+        data: {
+          affectedRows: result.affectedRows,
+        },
+        metadata: {
+          timestamp: new Date().toISOString(),
+          requestId: request.id,
+        },
+      };
+    } catch (error) {
+      reply.code(500);
+      return {
+        success: false,
+        error: {
+          code: 'INSERT_EXCEPTION_DATA_FAILED',
+          message: error instanceof Error ? error.message : 'Failed to insert exception data',
         },
         metadata: {
           timestamp: new Date().toISOString(),
