@@ -3,7 +3,7 @@
  * Types specific to HTTP API mode
  */
 
-import type { DbConfig } from './adapter.js';
+import type { DbConfig, ErrorTableConfig } from './adapter.js';
 
 /**
  * HTTP Server Configuration
@@ -57,6 +57,7 @@ export interface AppConfig {
   mode: 'mcp' | 'http';
   database?: DbConfig;
   http?: HttpConfig;
+  errorTable?: ErrorTableConfig;
 }
 
 /**
@@ -195,6 +196,24 @@ export interface Session {
   config: DbConfig;
   createdAt: Date;
   lastAccessedAt: Date;
+}
+
+/**
+ * Insert Exception Data Request
+ */
+export interface InsertExceptionDataRequest {
+  sessionId: string;
+  data: Array<{
+    MESSAGE_CODE: string;
+    MESSAGE: string;
+  }>;
+}
+
+/**
+ * Insert Exception Data Response
+ */
+export interface InsertExceptionDataResponse {
+  affectedRows: number;
 }
 
 /**

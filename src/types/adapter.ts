@@ -228,3 +228,29 @@ export interface SampleDataResult {
   /** 脱敏的列（仅当有列被脱敏时返回） */
   maskedColumns?: string[];
 }
+
+/**
+ * 错误信息表配置
+ */
+export interface ErrorTableConfig {
+  /** 错误信息表所在数据库 / schema */
+  errorDatabase?: string;
+  /** 错误信息表名 */
+  errorTable?: string;
+  /** 序列表 NAME 值 */
+  errorSeqName?: string;
+  /** 多语言表名 */
+  errorTlTable?: string;
+  /** 多语言开关 */
+  errorMultilang?: boolean;
+  /** 语言列表 */
+  errorLocales?: string[];
+}
+
+/**
+ * insert_exception_data 结果
+ */
+export interface InsertExceptionDataResult {
+  /** 主表受影响的行数 */
+  affectedRows: number;
+}
