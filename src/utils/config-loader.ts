@@ -6,6 +6,7 @@
 
 import { config as dotenvConfig } from 'dotenv';
 import type { AppConfig, HttpConfig } from '../types/http.js';
+import type { ErrorTableConfig } from '../types/adapter.js';
 
 // Load environment variables from .env file
 dotenvConfig();
@@ -86,6 +87,20 @@ export function loadFromEnv(): Partial<AppConfig> {
     };
   }
 
+  // Error table configuration
+  if (process.env.ERROR_TABLE || process.env.ERROR_DATABASE) {
+    config.errorTable = {
+      errorDatabase: process.env.ERROR_DATABASE,
+      errorTable: process.env.ERROR_TABLE,
+      errorSeqName: process.env.ERROR_SEQ_NAME || 'mt_error_message_s',
+      errorTlTable: process.env.ERROR_TL_TABLE,
+      errorMultilang: process.env.ERROR_MULTILANG === 'true',
+      errorLocales: process.env.ERROR_LOCALES
+        ? process.env.ERROR_LOCALES.split(',').map(s => s.trim())
+        : ['zh_CN', 'en_US'],
+    };
+  }
+
   return config;
 }
 
@@ -106,6 +121,9 @@ export function mergeConfigs(...configs: Partial<AppConfig>[]): AppConfig {
     }
     if (config.http) {
       merged.http = { ...merged.http, ...config.http };
+    }
+    if (config.errorTable) {
+      merged.errorTable = { ...merged.errorTable, ...config.errorTable };
     }
   }
 
