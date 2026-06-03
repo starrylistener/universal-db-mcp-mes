@@ -214,7 +214,11 @@ export class DatabaseMCPServer {
           },
           {
             name: 'insert_exception_data',
-            description: '向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"需要抛出一个错误"、"新增错误码"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。',
+            description: (() => {
+              const locales = this.errorTableConfig?.errorLocales || ['zh_CN', 'en_US'];
+              const localesStr = locales.join(', ');
+              return `向 Hzero 平台错误信息表及其多语言表插入数据，以便在代码中通过错误码获取提示信息。当用户描述业务场景并提到"xxx时，报错xxx"、"需要抛出一个错误"、"新增错误码"等情境时，AI 应主动生成合适的 MESSAGE_CODE 和 MESSAGE，并调用此工具插入。系统会自动填充租户ID、审计字段、初始标识，并从序列表生成 MESSAGE_ID。MESSAGE 可以是字符串（所有语言使用相同内容）或字符串数组（按顺序分别对应：${localesStr}）。`;
+            })(),
             inputSchema: {
               type: 'object',
               properties: {
@@ -225,7 +229,13 @@ export class DatabaseMCPServer {
                     type: 'object',
                     properties: {
                       MESSAGE_CODE: { type: 'string', description: '消息编码，varchar(255)，必填' },
-                      MESSAGE: { type: 'string', description: '消息内容，varchar(1000)，必填' },
+                      MESSAGE: {
+                        anyOf: [
+                          { type: 'string', description: '单语言：所有语言使用相同内容' },
+                          { type: 'array', items: { type: 'string' }, description: '多语言翻译：按配置语言顺序传入' },
+                        ],
+                        description: '消息内容，varchar(1000)，必填',
+                      },
                     },
                     required: ['MESSAGE_CODE', 'MESSAGE'],
                   },
