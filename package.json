@@ -4,7 +4,7 @@
   "description": "MCP 数据库万能连接器 - 让 Claude Desktop 直接连接你的数据库",
   "main": "dist/index.js",
   "bin": {
-    "universal-db-mcp": "dist/index.js"
+    "universal-db-mcp-mes": "dist/index.js"
   },
   "type": "module",
   "scripts": {

@@ -33,7 +33,7 @@ export class DatabaseMCPServer {
     this.errorTableConfig = errorTableConfig;
     this.server = new Server(
       {
-        name: 'universal-db-mcp',
+        name: 'universal-db-mcp-mes',
         version: '1.0.0',
       },
       {

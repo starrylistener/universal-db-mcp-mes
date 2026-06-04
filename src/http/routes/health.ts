@@ -34,7 +34,7 @@ export async function setupHealthRoutes(fastify: FastifyInstance): Promise<void>
     return {
       success: true,
       data: {
-        name: 'universal-db-mcp',
+        name: 'universal-db-mcp-mes',
         version: '1.0.0',
         mode: 'http',
         supportedDatabases: [

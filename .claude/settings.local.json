@@ -83,7 +83,8 @@
       "Bash(npm list *)",
       "Bash(npm install *)",
       "Bash(awk '{print $1}')",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Skill(superpowers:brainstorming)"
     ]
   },
   "enableAllProjectMcpServers": true,

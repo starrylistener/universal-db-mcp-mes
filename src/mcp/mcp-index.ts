@@ -17,7 +17,7 @@ export async function startMcpServer(): Promise<void> {
   const program = new Command();
 
   program
-    .name('universal-db-mcp')
+    .name('universal-db-mcp-mes')
     .description('MCP 数据库万能连接器 - 让 Claude Desktop 直接连接你的数据库')
     .version('1.0.0')
     .option('--type <type>', '数据库类型 (mysql|postgres|redis|oracle|dm|sqlserver|mssql|mongodb|sqlite|kingbase|gaussdb|opengauss|oceanbase|tidb|clickhouse|polardb|vastbase|highgo|goldendb)。不指定则以无连接模式启动，可在对话中通过 connect_database 动态连接。')
