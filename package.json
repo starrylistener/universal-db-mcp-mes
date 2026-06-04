@@ -116,10 +116,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Anarkh-Lee/universal-db-mcp.git"
+    "url": "https://github.com/starrylistener/universal-db-mcp-mes.git"
   },
   "bugs": {
-    "url": "https://github.com/Anarkh-Lee/universal-db-mcp/issues"
+    "url": "https://github.com/starrylistener/universal-db-mcp-mes/issues"
   },
-  "homepage": "https://github.com/Anarkh-Lee/universal-db-mcp#readme"
+  "homepage": "https://github.com/starrylistener/universal-db-mcp-mes#readme"
 }
