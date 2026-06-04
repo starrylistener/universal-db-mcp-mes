@@ -62,7 +62,7 @@
     "数据库",
     "AI"
   ],
-  "author": "Anarkh-Lee",
+  "author": "Zehua Feng (based on work by Anarkh-Lee)",
   "license": "MIT",
   "files": [
     "dist/**/*.js",
