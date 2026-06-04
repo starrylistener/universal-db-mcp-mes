@@ -36,7 +36,7 @@ Continue 使用以下位置的配置文件：
       "name": "database",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -60,7 +60,7 @@ Continue 使用以下位置的配置文件：
       "name": "mysql-dev",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -82,7 +82,7 @@ Continue 使用以下位置的配置文件：
       "name": "postgres-dev",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -104,7 +104,7 @@ Continue 使用以下位置的配置文件：
       "name": "mysql-users",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -117,7 +117,7 @@ Continue 使用以下位置的配置文件：
       "name": "postgres-analytics",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",

@@ -68,7 +68,7 @@ public class McpConfig {
     public McpClient mcpClient() {
         return McpClient.builder()
             .command("npx")
-            .args("universal-db-mcp",
+            .args("universal-db-mcp-mes",
                   "--type", "mysql",
                   "--host", "localhost",
                   "--port", "3306",

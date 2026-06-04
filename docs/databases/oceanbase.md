@@ -10,7 +10,7 @@
     "oceanbase-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -31,7 +31,7 @@
     "oceanbase-cloud": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "oceanbase.cn-hangzhou.aliyuncs.com",
         "--port", "2883",

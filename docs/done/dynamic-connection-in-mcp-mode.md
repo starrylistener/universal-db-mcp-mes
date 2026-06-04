@@ -68,7 +68,7 @@ MCP stdio 模式下，数据库连接参数必须在 `claude_desktop_config.json
   "mcpServers": {
     "universal-db": {
       "command": "npx",
-      "args": ["universal-db-mcp"]
+      "args": ["universal-db-mcp-mes"]
     }
   }
 }
@@ -83,7 +83,7 @@ MCP stdio 模式下，数据库连接参数必须在 `claude_desktop_config.json
   "mcpServers": {
     "universal-db": {
       "command": "npx",
-      "args": ["universal-db-mcp", "--type", "mysql", "--host", "localhost", "--port", "3306", "--user", "root", "--password", "xxx", "--database", "mydb"]
+      "args": ["universal-db-mcp-mes", "--type", "mysql", "--host", "localhost", "--port", "3306", "--user", "root", "--password", "xxx", "--database", "mydb"]
     }
   }
 }

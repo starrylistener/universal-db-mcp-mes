@@ -87,10 +87,10 @@ After installing the plugin, configure the MCP server in your Neovim setup.
 ```lua
 require("mcphub").setup({
   servers = {
-    ["universal-db-mcp"] = {
+    ["universal-db-mcp-mes"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -113,7 +113,7 @@ require("mcphub").setup({
     ["mysql-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -134,7 +134,7 @@ require("mcphub").setup({
     ["postgres-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -155,7 +155,7 @@ require("mcphub").setup({
     ["sqlite-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       }
@@ -172,7 +172,7 @@ require("mcphub").setup({
     ["sqlserver-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -193,7 +193,7 @@ require("mcphub").setup({
     ["oracle-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -214,7 +214,7 @@ require("mcphub").setup({
     ["mongodb"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -235,7 +235,7 @@ require("mcphub").setup({
     ["redis"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -256,7 +256,7 @@ require("mcphub").setup({
     ["mysql-production"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -268,7 +268,7 @@ require("mcphub").setup({
     ["mysql-development"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -280,7 +280,7 @@ require("mcphub").setup({
     ["postgres-analytics"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -303,7 +303,7 @@ require("mcphub").setup({
     ["mysql-db-writable"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -522,7 +522,7 @@ require("mcphub").setup({
     ["mysql-db"] = {
       command = "npx",
       args = {
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

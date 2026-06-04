@@ -61,10 +61,10 @@ Add the Universal Database MCP Server configuration to your settings file:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -91,7 +91,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -112,7 +112,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "postgres-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -133,7 +133,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "sqlite-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -150,7 +150,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "sqlserver-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -171,7 +171,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "oracle-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -192,7 +192,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "mongodb": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -213,7 +213,7 @@ After saving the configuration file, restart the Cline extension or reload VS Co
     "redis": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -234,7 +234,7 @@ You can configure multiple database connections:
     "mysql-production": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -246,7 +246,7 @@ You can configure multiple database connections:
     "mysql-development": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -258,7 +258,7 @@ You can configure multiple database connections:
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -281,7 +281,7 @@ By default, write operations are disabled for safety. To enable them:
     "mysql-db-writable": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -307,7 +307,7 @@ For better security, you can use environment variables in your configuration:
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -538,7 +538,7 @@ If your database runs in Docker, ensure the container is accessible:
     "docker-mysql": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "127.0.0.1",
         "--port", "3306",
@@ -563,7 +563,7 @@ You can temporarily disable a server without removing its configuration:
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

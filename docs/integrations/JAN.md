@@ -36,7 +36,7 @@ Add the following configuration:
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -59,7 +59,7 @@ Add the following configuration:
     "mysql-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -80,7 +80,7 @@ Add the following configuration:
     "postgres-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -101,7 +101,7 @@ Add the following configuration:
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/database.db"
       ]

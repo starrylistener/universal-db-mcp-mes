@@ -10,7 +10,7 @@
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -27,7 +27,7 @@
     "sqlite-app": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "C:\\Users\\YourName\\Documents\\myapp.db"
       ]
@@ -46,7 +46,7 @@
     "sqlite-notes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/Users/YourName/Documents/notes.db"
       ]

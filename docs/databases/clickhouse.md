@@ -70,7 +70,7 @@ clickhouse server
     "clickhouse-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "clickhouse",
         "--host", "localhost",
         "--port", "8123",
@@ -91,7 +91,7 @@ clickhouse server
     "clickhouse-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "clickhouse",
         "--host", "localhost",
@@ -113,7 +113,7 @@ clickhouse server
     "clickhouse-cloud": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "clickhouse",
         "--host", "your-instance.clickhouse.cloud",
         "--port", "8443",
@@ -388,7 +388,7 @@ INSERT INTO events VALUES (now(), 2, 'view');
 ```json
 {
   "args": [
-    "universal-db-mcp",
+    "universal-db-mcp-mes",
     "--type", "clickhouse",
     "--host", "localhost",
     "--port", "8123",

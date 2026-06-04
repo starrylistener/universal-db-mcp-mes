@@ -25,7 +25,7 @@ universal-db-mcp --help
 ### 方式二：npx 直接运行（无需安装）
 
 ```bash
-npx universal-db-mcp --help
+npx universal-db-mcp-mes --help
 ```
 
 这种方式会自动下载最新版本并运行，适合临时使用或测试。

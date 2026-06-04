@@ -39,7 +39,7 @@ pip install oterm
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -76,7 +76,7 @@ go install github.com/mark3labs/mcphost@latest
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -159,7 +159,7 @@ main();
     "mysql-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -180,7 +180,7 @@ main();
     "postgres-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -201,7 +201,7 @@ main();
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/database.db"
       ]

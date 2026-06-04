@@ -223,7 +223,7 @@ docker compose build --no-cache
 
 4. **手动测试命令**
    ```bash
-   npx universal-db-mcp --type mysql --host localhost --port 3306 --user root --password xxx --database test
+   npx universal-db-mcp-mes --type mysql --host localhost --port 3306 --user root --password xxx --database test
    ```
 
 ### 工具未显示

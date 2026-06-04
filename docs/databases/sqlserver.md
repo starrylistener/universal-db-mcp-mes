@@ -46,7 +46,7 @@ npm install universal-db-mcp
     "sqlserver-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -69,7 +69,7 @@ npm install universal-db-mcp
     "azure-sql": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "myserver.database.windows.net",
         "--port", "1433",
@@ -92,7 +92,7 @@ npm install universal-db-mcp
     "sqlserver-prod": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "sql-server.example.com",
         "--port", "1433",
@@ -113,7 +113,7 @@ npm install universal-db-mcp
     "sqlserver-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",

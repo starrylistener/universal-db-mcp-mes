@@ -30,7 +30,7 @@ Create a `.mcp.json` file in your project root:
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -56,7 +56,7 @@ Add to your Claude Code settings file:
     "my-database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -79,7 +79,7 @@ Add to your Claude Code settings file:
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -100,7 +100,7 @@ Add to your Claude Code settings file:
     "postgres-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -121,7 +121,7 @@ Add to your Claude Code settings file:
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "./data/app.db"
       ]
@@ -138,7 +138,7 @@ Add to your Claude Code settings file:
     "mysql-users": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -150,7 +150,7 @@ Add to your Claude Code settings file:
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",

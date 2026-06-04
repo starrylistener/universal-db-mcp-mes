@@ -31,10 +31,10 @@
 ```json
 {
   "github.copilot.chat.experimental.mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -63,7 +63,7 @@
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -84,7 +84,7 @@
     "postgres-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -105,7 +105,7 @@
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "${workspaceFolder}/data/app.db"
       ]

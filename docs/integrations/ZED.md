@@ -49,11 +49,11 @@ Add the Universal Database MCP Server configuration to your `settings.json` file
 ```json
 {
   "context_servers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -82,7 +82,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -105,7 +105,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "postgres",
           "--host", "localhost",
           "--port", "5432",
@@ -128,7 +128,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "sqlite",
           "--file", "/path/to/your/database.db"
         ]
@@ -147,7 +147,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "sqlserver",
           "--host", "localhost",
           "--port", "1433",
@@ -170,7 +170,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "oracle",
           "--host", "localhost",
           "--port", "1521",
@@ -193,7 +193,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mongodb",
           "--host", "localhost",
           "--port", "27017",
@@ -216,7 +216,7 @@ After saving the configuration file, restart Zed Editor for the changes to take 
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "redis",
           "--host", "localhost",
           "--port", "6379",
@@ -239,7 +239,7 @@ You can configure multiple database connections:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "prod-db.example.com",
           "--port", "3306",
@@ -253,7 +253,7 @@ You can configure multiple database connections:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -267,7 +267,7 @@ You can configure multiple database connections:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "postgres",
           "--host", "analytics-db.example.com",
           "--port", "5432",
@@ -292,7 +292,7 @@ By default, write operations are disabled for safety. To enable them:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -320,7 +320,7 @@ For better security, you can use environment variables in your configuration:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -531,7 +531,7 @@ The AI will examine your schema and generate appropriate code.
 2. Verify the command path is correct (use `which npx` to find the full path)
 3. Test the MCP server manually in terminal:
    ```bash
-   npx universal-db-mcp --type mysql --host localhost --port 3306 --user root --password your_password --database your_database
+   npx universal-db-mcp-mes --type mysql --host localhost --port 3306 --user root --password your_password --database your_database
    ```
 4. Ensure all required arguments are provided
 
@@ -548,7 +548,7 @@ If your database runs in Docker, ensure the container is accessible:
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "127.0.0.1",
           "--port", "3306",
@@ -578,7 +578,7 @@ Here's a complete `settings.json` example with database MCP server alongside oth
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",

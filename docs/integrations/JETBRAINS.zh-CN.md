@@ -55,10 +55,10 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
 {
   "servers": [
     {
-      "name": "universal-db-mcp",
+      "name": "universal-db-mcp-mes",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -87,7 +87,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "mysql-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -109,7 +109,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "postgres-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -131,7 +131,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "sqlite-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -149,7 +149,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "sqlserver-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -171,7 +171,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "oracle-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -193,7 +193,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "mongodb",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -215,7 +215,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "redis",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -235,7 +235,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "dm-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -257,7 +257,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "kingbase-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "kingbase",
         "--host", "localhost",
         "--port", "54321",
@@ -281,7 +281,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "mysql-production",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -294,7 +294,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "mysql-development",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -307,7 +307,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "postgres-analytics",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -331,7 +331,7 @@ JetBrains IDE 使用基于 JSON 的配置来管理 MCP 服务器，可通过 IDE
       "name": "mysql-db-writable",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -591,7 +591,7 @@ GROUP BY u.id
 
 1. 进入 **Help > Show Log in Explorer/Finder**
 2. 打开 `idea.log` 文件
-3. 搜索 "MCP" 或 "universal-db-mcp" 相关消息
+3. 搜索 "MCP" 或 "universal-db-mcp-mes" 相关消息
 
 ## 高级配置
 
@@ -625,7 +625,7 @@ export DB_PASSWORD="your_secure_password"
       "name": "docker-mysql",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "127.0.0.1",
         "--port", "3306",

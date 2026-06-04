@@ -64,7 +64,7 @@ docker run -d --name highgo-server \
     "highgo-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "highgo",
         "--host", "localhost",
         "--port", "5866",
@@ -85,7 +85,7 @@ docker run -d --name highgo-server \
     "highgo-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "highgo",
         "--host", "localhost",
@@ -107,7 +107,7 @@ docker run -d --name highgo-server \
     "highgo-cluster": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "highgo",
         "--host", "highgo-cluster.example.com",
         "--port", "5866",
@@ -334,7 +334,7 @@ COPY users (name, email) FROM '/path/to/data.csv' CSV;
 ```json
 {
   "args": [
-    "universal-db-mcp",
+    "universal-db-mcp-mes",
     "--type", "highgo",
     "--host", "localhost",
     "--port", "5866",

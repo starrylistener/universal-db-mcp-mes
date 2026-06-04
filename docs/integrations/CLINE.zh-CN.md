@@ -61,10 +61,10 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -91,7 +91,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -112,7 +112,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "postgres-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -133,7 +133,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "sqlite-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -150,7 +150,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "sqlserver-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -171,7 +171,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "oracle-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -192,7 +192,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mongodb": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -213,7 +213,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "redis": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -232,7 +232,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "dm-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -253,7 +253,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "kingbase-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "kingbase",
         "--host", "localhost",
         "--port", "54321",
@@ -276,7 +276,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mysql-production": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -288,7 +288,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mysql-development": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -300,7 +300,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -323,7 +323,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mysql-db-writable": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -349,7 +349,7 @@ Cline 使用 MCP stdio 模式进行工具集成。配置通过 JSON 文件完成
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -580,7 +580,7 @@ Cline 将自主查询数据库、分析结果并提供建议。
     "docker-mysql": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "127.0.0.1",
         "--port", "3306",
@@ -605,7 +605,7 @@ Cline 将自主查询数据库、分析结果并提供建议。
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

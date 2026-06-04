@@ -42,10 +42,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -63,10 +63,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -84,10 +84,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -101,10 +101,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -122,10 +122,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -143,10 +143,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -164,10 +164,10 @@ Edit the `mcp_config.json` file to add Universal Database MCP Server:
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -185,10 +185,10 @@ By default, the MCP server operates in read-only mode. To enable write operation
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -353,7 +353,7 @@ You can configure multiple database connections:
     "mysql-production": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -365,7 +365,7 @@ You can configure multiple database connections:
     "mysql-development": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -378,7 +378,7 @@ You can configure multiple database connections:
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -494,10 +494,10 @@ Then reference in configuration (if supported by your shell):
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

@@ -708,7 +708,7 @@ server {
 
     # 根路径返回服务信息
     location = / {
-        return 200 '{"service":"universal-db-mcp","status":"running"}';
+        return 200 '{"service":"universal-db-mcp-mes","status":"running"}';
         add_header Content-Type application/json;
     }
 

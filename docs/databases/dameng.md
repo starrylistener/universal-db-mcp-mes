@@ -41,7 +41,7 @@ npm install universal-db-mcp
     "dm-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -62,7 +62,7 @@ npm install universal-db-mcp
     "dm-prod": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "dm-server.example.com",
         "--port", "5236",
@@ -83,7 +83,7 @@ npm install universal-db-mcp
     "dm-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",

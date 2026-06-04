@@ -201,7 +201,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -222,7 +222,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "mysql-prod": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -234,7 +234,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics.example.com",
         "--port", "5432",
@@ -246,7 +246,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "redis-cache": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "cache.example.com",
         "--port", "6379",
@@ -265,7 +265,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -287,7 +287,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -309,7 +309,7 @@ SESSION_CLEANUP_INTERVAL=300000
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

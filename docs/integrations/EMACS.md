@@ -77,9 +77,9 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   :ensure t
   :config
   (setq mcp-servers
-        '(("universal-db-mcp"
+        '(("universal-db-mcp-mes"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ---
@@ -95,7 +95,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("mysql-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ### PostgreSQL
@@ -107,7 +107,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("postgres-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "postgres" "--host" "localhost" "--port" "5432" "--user" "postgres" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "postgres" "--host" "localhost" "--port" "5432" "--user" "postgres" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ### SQLite
@@ -119,7 +119,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("sqlite-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "sqlite" "--file" "/path/to/your/database.db")))))
+           :args ("universal-db-mcp-mes" "--type" "sqlite" "--file" "/path/to/your/database.db")))))
 ```
 
 ### SQL Server
@@ -131,7 +131,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("sqlserver-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "sqlserver" "--host" "localhost" "--port" "1433" "--user" "sa" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "sqlserver" "--host" "localhost" "--port" "1433" "--user" "sa" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ### Oracle
@@ -143,7 +143,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("oracle-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "oracle" "--host" "localhost" "--port" "1521" "--user" "system" "--password" "your_password" "--database" "ORCL")))))
+           :args ("universal-db-mcp-mes" "--type" "oracle" "--host" "localhost" "--port" "1521" "--user" "system" "--password" "your_password" "--database" "ORCL")))))
 ```
 
 ### MongoDB
@@ -155,7 +155,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("mongodb"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mongodb" "--host" "localhost" "--port" "27017" "--user" "admin" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "mongodb" "--host" "localhost" "--port" "27017" "--user" "admin" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ### Redis
@@ -167,7 +167,7 @@ Add the Universal Database MCP Server configuration to your Emacs configuration 
   (setq mcp-servers
         '(("redis"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "redis" "--host" "localhost" "--port" "6379" "--password" "your_password")))))
+           :args ("universal-db-mcp-mes" "--type" "redis" "--host" "localhost" "--port" "6379" "--password" "your_password")))))
 ```
 
 ### Multiple Databases
@@ -181,13 +181,13 @@ You can configure multiple database connections:
   (setq mcp-servers
         '(("mysql-production"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "prod-db.example.com" "--port" "3306" "--user" "readonly_user" "--password" "prod_password" "--database" "production_db"))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "prod-db.example.com" "--port" "3306" "--user" "readonly_user" "--password" "prod_password" "--database" "production_db"))
           ("mysql-development"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "dev_password" "--database" "development_db"))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "dev_password" "--database" "development_db"))
           ("postgres-analytics"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "postgres" "--host" "analytics-db.example.com" "--port" "5432" "--user" "analyst" "--password" "analytics_password" "--database" "analytics")))))
+           :args ("universal-db-mcp-mes" "--type" "postgres" "--host" "analytics-db.example.com" "--port" "5432" "--user" "analyst" "--password" "analytics_password" "--database" "analytics")))))
 ```
 
 ### Enable Write Operations
@@ -201,7 +201,7 @@ By default, write operations are disabled for safety. To enable them:
   (setq mcp-servers
         '(("mysql-db-writable"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database" "--allow-write" "true")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database" "--allow-write" "true")))))
 ```
 
 > **Warning**: Enabling write operations allows the AI to execute INSERT, UPDATE, DELETE, and other modifying queries. Use with caution, especially in production environments.
@@ -431,7 +431,7 @@ export DB_PASSWORD="your_secure_password"
   (setq mcp-servers
         `(("mysql-db"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" ,(getenv "DB_PASSWORD") "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" ,(getenv "DB_PASSWORD") "--database" "your_database")))))
 ```
 
 Note the use of backtick (`) instead of single quote (') to enable evaluation of `(getenv "DB_PASSWORD")`.
@@ -452,9 +452,9 @@ If you use gptel for AI interactions in Emacs, you can integrate MCP tools:
   :after gptel
   :config
   (setq mcp-servers
-        '(("universal-db-mcp"
+        '(("universal-db-mcp-mes"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "localhost" "--port" "3306" "--user" "root" "--password" "your_password" "--database" "your_database")))))
 ```
 
 ### Using with Docker
@@ -468,7 +468,7 @@ If your database runs in Docker, ensure the container is accessible:
   (setq mcp-servers
         '(("docker-mysql"
            :command "npx"
-           :args ("universal-db-mcp" "--type" "mysql" "--host" "127.0.0.1" "--port" "3306" "--user" "root" "--password" "root_password" "--database" "app_db")))))
+           :args ("universal-db-mcp-mes" "--type" "mysql" "--host" "127.0.0.1" "--port" "3306" "--user" "root" "--password" "root_password" "--database" "app_db")))))
 ```
 
 > **Note**: Use `127.0.0.1` instead of `localhost` when connecting to Docker containers on some systems.

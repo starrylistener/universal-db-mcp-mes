@@ -54,7 +54,7 @@ docker run -d --name tidb-server \
     "tidb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "tidb",
         "--host", "localhost",
         "--port", "4000",
@@ -75,7 +75,7 @@ docker run -d --name tidb-server \
     "tidb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "tidb",
         "--host", "localhost",
@@ -97,7 +97,7 @@ docker run -d --name tidb-server \
     "tidb-cloud": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "tidb",
         "--host", "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
         "--port", "4000",
@@ -285,7 +285,7 @@ INSERT INTO users (name, email) VALUES
 ```json
 {
   "args": [
-    "universal-db-mcp",
+    "universal-db-mcp-mes",
     "--type", "tidb",
     "--host", "localhost",
     "--port", "4000",

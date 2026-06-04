@@ -36,7 +36,7 @@ Add the MCP server to your `config.json`:
       "name": "database",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -60,7 +60,7 @@ Add the MCP server to your `config.json`:
       "name": "mysql-dev",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -82,7 +82,7 @@ Add the MCP server to your `config.json`:
       "name": "postgres-dev",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -104,7 +104,7 @@ Add the MCP server to your `config.json`:
       "name": "mysql-users",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -117,7 +117,7 @@ Add the MCP server to your `config.json`:
       "name": "postgres-analytics",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",

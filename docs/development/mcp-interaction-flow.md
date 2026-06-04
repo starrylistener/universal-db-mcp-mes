@@ -61,7 +61,7 @@
        │
        ▼
 3. 发现 mcpServers 配置，启动 MCP Server 子进程
-   命令: npx universal-db-mcp --type mysql --host ... --password ...
+   命令: npx universal-db-mcp-mes --type mysql --host ... --password ...
        │
        ▼
 4. MCP Server 启动，通过 stdio 与 Claude Desktop 建立通信

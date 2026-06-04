@@ -22,7 +22,7 @@ npx @modelcontextprotocol/inspector
 ### 使用数据库服务器启动 Inspector
 
 ```bash
-npx @modelcontextprotocol/inspector npx universal-db-mcp \
+npx @modelcontextprotocol/inspector npx universal-db-mcp-mes \
   --type mysql \
   --host localhost \
   --port 3306 \

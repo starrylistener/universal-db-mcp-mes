@@ -55,10 +55,10 @@ Add the Universal Database MCP Server configuration:
 {
   "servers": [
     {
-      "name": "universal-db-mcp",
+      "name": "universal-db-mcp-mes",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -87,7 +87,7 @@ Add the Universal Database MCP Server configuration:
       "name": "mysql-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -109,7 +109,7 @@ Add the Universal Database MCP Server configuration:
       "name": "postgres-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -131,7 +131,7 @@ Add the Universal Database MCP Server configuration:
       "name": "sqlite-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -149,7 +149,7 @@ Add the Universal Database MCP Server configuration:
       "name": "sqlserver-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -171,7 +171,7 @@ Add the Universal Database MCP Server configuration:
       "name": "oracle-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -193,7 +193,7 @@ Add the Universal Database MCP Server configuration:
       "name": "mongodb",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -215,7 +215,7 @@ Add the Universal Database MCP Server configuration:
       "name": "redis",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -235,7 +235,7 @@ Add the Universal Database MCP Server configuration:
       "name": "dm-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -257,7 +257,7 @@ Add the Universal Database MCP Server configuration:
       "name": "kingbase-db",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "kingbase",
         "--host", "localhost",
         "--port", "54321",
@@ -281,7 +281,7 @@ You can configure multiple database connections:
       "name": "mysql-production",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -294,7 +294,7 @@ You can configure multiple database connections:
       "name": "mysql-development",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -307,7 +307,7 @@ You can configure multiple database connections:
       "name": "postgres-analytics",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -331,7 +331,7 @@ By default, write operations are disabled for safety. To enable them:
       "name": "mysql-db-writable",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -591,7 +591,7 @@ To view MCP-related logs:
 
 1. Go to **Help > Show Log in Explorer/Finder**
 2. Open the `idea.log` file
-3. Search for "MCP" or "universal-db-mcp" related messages
+3. Search for "MCP" or "universal-db-mcp-mes" related messages
 
 ## Advanced Configuration
 
@@ -625,7 +625,7 @@ If your database runs in Docker, ensure the container is accessible:
       "name": "docker-mysql",
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "127.0.0.1",
         "--port", "3306",

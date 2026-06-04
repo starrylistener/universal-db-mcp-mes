@@ -34,7 +34,7 @@ npm install -g universal-db-mcp
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

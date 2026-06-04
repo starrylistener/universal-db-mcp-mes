@@ -22,7 +22,7 @@ Add to 5ire's MCP configuration:
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

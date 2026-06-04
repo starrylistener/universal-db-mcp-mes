@@ -26,7 +26,7 @@
 
 ```
 #添加mcp
-claude mcp add universal-db-mcp -- npx universal-db-mcp --type xxx --host xxx.xxx.xxx.xxx --port xxx --user xxx --password xxx --database xxx
+claude mcp add universal-db-mcp -- npx universal-db-mcp-mes --type xxx --host xxx.xxx.xxx.xxx --port xxx --user xxx --password xxx --database xxx
 ```
 
 下面还有一些命令可能会用到
@@ -52,7 +52,7 @@ claude mcp get universal-db-mcp
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -78,7 +78,7 @@ claude mcp get universal-db-mcp
     "my-database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -101,7 +101,7 @@ claude mcp get universal-db-mcp
     "mysql-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -122,7 +122,7 @@ claude mcp get universal-db-mcp
     "postgres-dev": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -143,7 +143,7 @@ claude mcp get universal-db-mcp
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "./data/app.db"
       ]
@@ -160,7 +160,7 @@ claude mcp get universal-db-mcp
     "mysql-users": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -172,7 +172,7 @@ claude mcp get universal-db-mcp
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",

@@ -50,7 +50,7 @@ PolarDB 提供三种连接地址：
     "polardb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "polardb",
         "--host", "pc-xxxxx.mysql.polardb.rds.aliyuncs.com",
         "--port", "3306",
@@ -71,7 +71,7 @@ PolarDB 提供三种连接地址：
     "polardb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "polardb",
         "--host", "pc-xxxxx.mysql.polardb.rds.aliyuncs.com",
@@ -93,7 +93,7 @@ PolarDB 提供三种连接地址：
     "polardb-primary": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "polardb",
         "--host", "pc-xxxxx.mysql.polardb.rds.aliyuncs.com",
@@ -106,7 +106,7 @@ PolarDB 提供三种连接地址：
     "polardb-readonly": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "polardb",
         "--host", "pc-xxxxx-ro.mysql.polardb.rds.aliyuncs.com",
         "--port", "3306",
@@ -283,7 +283,7 @@ INSERT INTO users (name, email) VALUES
 ```json
 {
   "args": [
-    "universal-db-mcp",
+    "universal-db-mcp-mes",
     "--type", "polardb",
     "--host", "pc-xxxxx-ro.mysql.polardb.rds.aliyuncs.com",
     "--port", "3306",

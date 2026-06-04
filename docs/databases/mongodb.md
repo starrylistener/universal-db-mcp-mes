@@ -43,7 +43,7 @@ npm install -g universal-db-mcp
     "mongodb": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -72,7 +72,7 @@ npm install -g universal-db-mcp
     "mongodb-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -91,7 +91,7 @@ npm install -g universal-db-mcp
     "mongodb-auth": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -116,7 +116,7 @@ MongoDB Atlas 是 MongoDB 的云服务：
     "mongodb-atlas": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "cluster0.xxxxx.mongodb.net",
         "--port", "27017",
@@ -142,7 +142,7 @@ MongoDB Atlas 是 MongoDB 的云服务：
     "mongodb-replica": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "replica-primary.example.com",
         "--port", "27017",

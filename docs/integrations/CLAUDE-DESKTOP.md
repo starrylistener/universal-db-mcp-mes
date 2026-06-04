@@ -60,7 +60,7 @@ Add the following to your `claude_desktop_config.json`:
     "my-database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -125,7 +125,7 @@ Add the following to your `claude_desktop_config.json`:
     "mysql-production": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -146,7 +146,7 @@ Add the following to your `claude_desktop_config.json`:
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -167,7 +167,7 @@ Add the following to your `claude_desktop_config.json`:
     "sqlite-local": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/database.db"
       ]
@@ -184,7 +184,7 @@ Add the following to your `claude_desktop_config.json`:
     "sqlserver-erp": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -205,7 +205,7 @@ Add the following to your `claude_desktop_config.json`:
     "oracle-finance": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -228,7 +228,7 @@ For Oracle 11g and earlier versions, you need to specify the Oracle Instant Clie
     "oracle11g-legacy": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -250,7 +250,7 @@ For Oracle 11g and earlier versions, you need to specify the Oracle Instant Clie
     "mongodb-logs": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -271,7 +271,7 @@ For Oracle 11g and earlier versions, you need to specify the Oracle Instant Clie
     "redis-cache": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -290,7 +290,7 @@ For Oracle 11g and earlier versions, you need to specify the Oracle Instant Clie
     "dameng-gov": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -311,7 +311,7 @@ For Oracle 11g and earlier versions, you need to specify the Oracle Instant Clie
     "kingbase-enterprise": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "kingbase",
         "--host", "localhost",
         "--port", "54321",
@@ -334,7 +334,7 @@ You can configure multiple databases simultaneously:
     "mysql-users": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -346,7 +346,7 @@ You can configure multiple databases simultaneously:
     "postgres-orders": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -358,7 +358,7 @@ You can configure multiple databases simultaneously:
     "redis-cache": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -508,7 +508,7 @@ By default, Universal DB MCP runs in read-only mode, blocking all write operatio
     "my-database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--user", "readonly_user",
@@ -532,7 +532,7 @@ By default, the server runs in read-only mode. Fine-grained permission control i
     "my-database-readwrite": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--user", "admin",
@@ -553,7 +553,7 @@ By default, the server runs in read-only mode. Fine-grained permission control i
     "my-database-custom": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--user", "admin",
@@ -574,7 +574,7 @@ By default, the server runs in read-only mode. Fine-grained permission control i
     "my-database-writable": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--user", "admin",
@@ -600,7 +600,7 @@ You can also use environment variables in your configuration:
     "my-database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--user", "root",
@@ -627,7 +627,7 @@ npm install -g universal-db-mcp
 {
   "mcpServers": {
     "my-database": {
-      "command": "universal-db-mcp",
+      "command": "universal-db-mcp-mes",
       "args": [
         "--type", "mysql",
         "--host", "localhost",

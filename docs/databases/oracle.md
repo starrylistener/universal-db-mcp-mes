@@ -20,7 +20,7 @@
     "oracle-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -43,7 +43,7 @@ Oracle 11g 需要使用 Thick 模式，添加 `--oracle-client-path` 参数：
     "oracle-11g": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -65,7 +65,7 @@ Oracle 11g 需要使用 Thick 模式，添加 `--oracle-client-path` 参数：
     "oracle-prod": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "oracle-server.example.com",
         "--port", "1521",

@@ -28,7 +28,7 @@
     "database": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "your-db-host",
         "--port", "3306",

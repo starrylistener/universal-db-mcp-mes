@@ -10,7 +10,7 @@
     "gaussdb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "gaussdb",
         "--host", "localhost",
         "--port", "5432",
@@ -31,7 +31,7 @@
     "gaussdb-cloud": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "gaussdb",
         "--host", "gaussdb.cn-north-4.myhuaweicloud.com",
         "--port", "5432",

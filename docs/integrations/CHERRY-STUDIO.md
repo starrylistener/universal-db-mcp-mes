@@ -37,10 +37,10 @@ In the MCP server configuration section, add a new server with the following JSO
 ```json
 {
   "mcpServers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -67,7 +67,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "mysql-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -88,7 +88,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "postgres-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "localhost",
         "--port", "5432",
@@ -109,7 +109,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "sqlite-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlite",
         "--file", "/path/to/your/database.db"
       ]
@@ -126,7 +126,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "sqlserver-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "sqlserver",
         "--host", "localhost",
         "--port", "1433",
@@ -147,7 +147,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "oracle-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oracle",
         "--host", "localhost",
         "--port", "1521",
@@ -168,7 +168,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "mongodb": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mongodb",
         "--host", "localhost",
         "--port", "27017",
@@ -189,7 +189,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "redis": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "redis",
         "--host", "localhost",
         "--port", "6379",
@@ -208,7 +208,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "dm-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "dm",
         "--host", "localhost",
         "--port", "5236",
@@ -229,7 +229,7 @@ After adding the configuration, save the settings and restart Cherry Studio for 
     "kingbase-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "kingbase",
         "--host", "localhost",
         "--port", "54321",
@@ -252,7 +252,7 @@ You can configure multiple database connections:
     "mysql-production": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "prod-db.example.com",
         "--port", "3306",
@@ -264,7 +264,7 @@ You can configure multiple database connections:
     "mysql-development": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",
@@ -276,7 +276,7 @@ You can configure multiple database connections:
     "postgres-analytics": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "postgres",
         "--host", "analytics-db.example.com",
         "--port", "5432",
@@ -299,7 +299,7 @@ By default, write operations are disabled for safety. To enable them:
     "mysql-db-writable": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

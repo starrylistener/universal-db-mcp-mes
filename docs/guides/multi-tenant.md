@@ -142,7 +142,7 @@ FLUSH PRIVILEGES;
     "oceanbase-tenant-1001": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -203,7 +203,7 @@ FLUSH PRIVILEGES;
     "oceanbase-tenant-1001": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -281,7 +281,7 @@ FLUSH PRIVILEGES;
     "oceanbase-tenant-1001": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -342,7 +342,7 @@ FLUSH PRIVILEGES;
     "oceanbase-tenant-1001": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -383,7 +383,7 @@ LIMIT 10;
     "oceanbase-tenant-1001": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -395,7 +395,7 @@ LIMIT 10;
     "oceanbase-tenant-1002": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",
@@ -407,7 +407,7 @@ LIMIT 10;
     "oceanbase-tenant-1003": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "oceanbase",
         "--host", "localhost",
         "--port", "2881",

@@ -66,7 +66,7 @@ npx universal-db-mcp@latest --help
 npm install -g universal-db-mcp
 
 # 或直接使用 npx
-npx universal-db-mcp --type mysql --host localhost --port 3306 ...
+npx universal-db-mcp-mes --type mysql --host localhost --port 3306 ...
 ```
 
 ## 📦 包信息

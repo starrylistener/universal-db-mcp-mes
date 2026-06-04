@@ -32,7 +32,7 @@ from langchain_openai import ChatOpenAI
 toolkit = MCPToolkit(
     server_command="npx",
     server_args=[
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "mysql",
         "--host", "localhost",
         "--port", "3306",

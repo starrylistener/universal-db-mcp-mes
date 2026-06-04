@@ -636,7 +636,7 @@ curl -L https://fly.io/install.sh | sh
 #### 2. Create fly.toml
 
 ```toml
-app = "universal-db-mcp"
+app = "universal-db-mcp-mes"
 primary_region = "hkg"
 
 [build]

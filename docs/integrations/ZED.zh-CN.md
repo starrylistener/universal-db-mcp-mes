@@ -49,11 +49,11 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
 ```json
 {
   "context_servers": {
-    "universal-db-mcp": {
+    "universal-db-mcp-mes": {
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -82,7 +82,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -105,7 +105,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "postgres",
           "--host", "localhost",
           "--port", "5432",
@@ -128,7 +128,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "sqlite",
           "--file", "/path/to/your/database.db"
         ]
@@ -147,7 +147,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "sqlserver",
           "--host", "localhost",
           "--port", "1433",
@@ -170,7 +170,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "oracle",
           "--host", "localhost",
           "--port", "1521",
@@ -193,7 +193,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mongodb",
           "--host", "localhost",
           "--port", "27017",
@@ -216,7 +216,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "redis",
           "--host", "localhost",
           "--port", "6379",
@@ -237,7 +237,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "dm",
           "--host", "localhost",
           "--port", "5236",
@@ -260,7 +260,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "kingbase",
           "--host", "localhost",
           "--port", "54321",
@@ -285,7 +285,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "prod-db.example.com",
           "--port", "3306",
@@ -299,7 +299,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -313,7 +313,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "postgres",
           "--host", "analytics-db.example.com",
           "--port", "5432",
@@ -338,7 +338,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -366,7 +366,7 @@ Zed 使用 MCP stdio 模式进行上下文服务器集成。配置通过 `settin
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",
@@ -577,7 +577,7 @@ AI 将检查您的结构并生成适当的代码。
 2. 验证命令路径是否正确（使用 `which npx` 查找完整路径）
 3. 在终端中手动测试 MCP 服务器：
    ```bash
-   npx universal-db-mcp --type mysql --host localhost --port 3306 --user root --password your_password --database your_database
+   npx universal-db-mcp-mes --type mysql --host localhost --port 3306 --user root --password your_password --database your_database
    ```
 4. 确保提供了所有必需的参数
 
@@ -594,7 +594,7 @@ AI 将检查您的结构并生成适当的代码。
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "127.0.0.1",
           "--port", "3306",
@@ -624,7 +624,7 @@ AI 将检查您的结构并生成适当的代码。
       "command": {
         "path": "npx",
         "args": [
-          "universal-db-mcp",
+          "universal-db-mcp-mes",
           "--type", "mysql",
           "--host", "localhost",
           "--port", "3306",

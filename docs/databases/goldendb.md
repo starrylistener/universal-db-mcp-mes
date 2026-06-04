@@ -65,7 +65,7 @@ docker run -d --name goldendb-server \
     "goldendb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "goldendb",
         "--host", "localhost",
         "--port", "3306",
@@ -86,7 +86,7 @@ docker run -d --name goldendb-server \
     "goldendb-db": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--permission-mode", "full",
         "--type", "goldendb",
         "--host", "localhost",
@@ -108,7 +108,7 @@ docker run -d --name goldendb-server \
     "goldendb-cluster": {
       "command": "npx",
       "args": [
-        "universal-db-mcp",
+        "universal-db-mcp-mes",
         "--type", "goldendb",
         "--host", "goldendb-cluster.example.com",
         "--port", "3306",
@@ -282,7 +282,7 @@ INSERT INTO users (name, email) VALUES
 ```json
 {
   "args": [
-    "universal-db-mcp",
+    "universal-db-mcp-mes",
     "--type", "goldendb",
     "--host", "localhost",
     "--port", "3306",
