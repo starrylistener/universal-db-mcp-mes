@@ -358,8 +358,8 @@ export class DatabaseService {
       ? `${cfg.errorDatabase}.mt_sys_sequence`
       : 'mt_sys_sequence';
 
-    // 2. 查询序列表
-    const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier(seqTableRef)} WHERE NAME = ?`;
+    // 2. 查询序列表（FOR UPDATE 锁定行，防止并发重复取号）
+    const seqQuery = `SELECT CURRENT_VALUE FROM ${this.quoteIdentifier(seqTableRef)} WHERE NAME = ? FOR UPDATE`;
     const seqResult = await this.adapter.executeQuery(seqQuery, [cfg.errorSeqName]);
     const seqValue = (seqResult.rows[0]?.CURRENT_VALUE as number) || 0;
 

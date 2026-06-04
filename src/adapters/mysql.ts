@@ -168,9 +168,12 @@ export class MySQLAdapter implements DbAdapter {
     if (!this.connection) {
       throw new Error('没有活跃的事务');
     }
-    await this.connection.commit();
-    this.connection.release();
-    this.connection = null;
+    try {
+      await this.connection.commit();
+    } finally {
+      this.connection.release();
+      this.connection = null;
+    }
   }
 
   /**
@@ -180,9 +183,12 @@ export class MySQLAdapter implements DbAdapter {
     if (!this.connection) {
       throw new Error('没有活跃的事务');
     }
-    await this.connection.rollback();
-    this.connection.release();
-    this.connection = null;
+    try {
+      await this.connection.rollback();
+    } finally {
+      this.connection.release();
+      this.connection = null;
+    }
   }
 
   /**
