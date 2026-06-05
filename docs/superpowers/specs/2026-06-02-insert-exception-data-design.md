@@ -24,14 +24,15 @@
 
 复用现有配置机制，通过 CLI 参数或环境变量指定目标库表：
 
-| 配置项 | CLI 参数 | 环境变量 | 说明 |
-|--------|----------|----------|------|
-| 错误信息表库 | `--error-database` | `ERROR_DATABASE` | 数据库名 / schema |
-| 错误信息表 | `--error-table` | `ERROR_TABLE` | 表名 |
-| 错误信息序列表 | `--error-seq-name` | `ERROR_SEQ_NAME` | `mt_sys_sequence` 中的 NAME 值，默认 `mt_error_message_s` |
-| 错误信息多语言表 | `--error-tl-table` | `ERROR_TL_TABLE` | 如 `mt_error_message_tl`，预留 |
-| 多语言开关 | `--error-multilang` | `ERROR_MULTILANG` | `true` / `false`，默认 `false`，预留 |
-| 多语言列表 | `--error-locales` | `ERROR_LOCALES` | 逗号分隔，默认 `zh_CN,en_US`，预留 |
+| 配置项 | CLI 参数 | 环境变量 | 说明 | 默认值 |
+|--------|----------|----------|------|--------|
+| 错误信息表库 | `--error-database` | `ERROR_DATABASE` | 数据库名 / schema | - |
+| 错误信息表 | `--error-table` | `ERROR_TABLE` | 表名 | - |
+| 错误信息序列表 | `--error-seq-name` | `ERROR_SEQ_NAME` | `mt_sys_sequence` 中的 NAME 值 | `mt_error_message_s` |
+| 错误信息多语言表 | `--error-tl-table` | `ERROR_TL_TABLE` | 如 `mt_error_message_tl` | - |
+| 多语言开关 | `--error-multilang` | `ERROR_MULTILANG` | `true` / `false` | `false` |
+| 多语言列表 | `--error-locales` | `ERROR_LOCALES` | 逗号分隔 | `zh_CN,en_US` |
+| 序列表 ID 后缀 | `--error-seq-suffix` | `ERROR_SEQ_SUFFIX` | 用于字符串拼接生成 MESSAGE_ID | `001` |
 
 **加载优先级**（与现有机制保持一致）：
 `CLI 参数 > 环境变量 > 默认值`
@@ -43,7 +44,7 @@
 ```json
 {
   "name": "insert_exception_data",
-  "description": "向配置的错误信息表插入数据。AI 只需传入 MESSAGE_CODE 和 MESSAGE，系统会自动填充租户ID、审计字段、初始标识等其余字段。",
+  "description": "向 Hzero 平台注册新的错误码及其多语言提示信息...（动态生成，包含 MESSAGE_CODE 规则、多语言传入规则、执行前确认要求）",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -54,7 +55,17 @@
           "type": "object",
           "properties": {
             "MESSAGE_CODE": { "type": "string", "description": "消息编码，varchar(255)，必填" },
-            "MESSAGE": { "type": "string", "description": "消息内容，varchar(1000)，必填" }
+            "MESSAGE": {
+              "anyOf": [
+                { "type": "string", "description": "单语言：所有语言使用相同内容" },
+                {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "多语言翻译：必须严格按当前配置语言顺序传入，数组长度必须等于语言数量"
+                }
+              ],
+              "description": "消息内容，varchar(1000)，必填"
+            }
           },
           "required": ["MESSAGE_CODE", "MESSAGE"]
         }
@@ -67,54 +78,58 @@
 
 ### 3. 字段映射规则
 
+**主表（如 `mt_error_message`）：**
+
 | 数据库字段 | 来源 | 值 |
 |-----------|------|-----|
-| `MESSAGE_ID` | 系统生成 | 从 `mt_sys_sequence` 取 `CURRENT_VALUE × 1000 + 1`，并更新 `CURRENT_VALUE + 1` |
+| `MESSAGE_ID` | 系统生成 | 从 `mt_sys_sequence` 批量取号，字符串拼接 `${base}${suffix}` |
 | `TENANT_ID` | 系统固定 | `2` |
 | `MESSAGE_CODE` | AI 传入 | 必填 |
-| `MESSAGE` | AI 传入 | 必填 |
+| `MESSAGE` | AI 传入 | 必填（单语言取原值，多语言取数组第一项） |
 | `INITIAL_FLAG` | 系统固定 | `'N'` |
 | `CID` | 系统固定 | `1` |
 | `OBJECT_VERSION_NUMBER` | 系统固定 | `1` |
-| `CREATED_BY` | 系统固定 | `null` |
-| `CREATION_DATE` | 系统固定 | `null` |
-| `LAST_UPDATED_BY` | 系统固定 | `null` |
-| `LAST_UPDATE_DATE` | 系统固定 | `null` |
+
+**多语言表（如 `mt_error_message_tl`）：**
+
+| 数据库字段 | 来源 | 值 |
+|-----------|------|-----|
+| `MESSAGE_ID` | 同主表 | 与主表对应行相同 |
+| `LANG` | 系统固定 | 按 `--error-locales` 配置（默认 `zh_CN`, `en_US`） |
+| `MESSAGE` | AI 传入 | 单语言时全部相同；多语言数组时取对应索引，缺失回退第一项 |
 
 ### 4. 核心逻辑（`DatabaseService.insertExceptionData`）
 
 ```typescript
 async insertExceptionData(
-  data: Array<{ MESSAGE_CODE: string; MESSAGE: string }>
-): Promise<{ affectedRows: number; insertId?: number | string }>
+  data: Array<{ MESSAGE_CODE: string; MESSAGE: string | string[] }>
+): Promise<InsertExceptionDataResult>
 ```
 
 **执行流程**：
-1. 校验 `ERROR_TABLE` 是否已配置，未配置则抛错。
+1. 校验 `ERROR_TABLE` 和 `ERROR_TL_TABLE` 是否已配置，未配置则抛错。
 2. 校验当前权限是否包含 `insert`，无权限则抛错。
-3. 校验 `data` 非空且为数组。
-4. 获取目标表的 Schema 信息（复用 `getTableInfo`），校验目标表是否存在。
-5. **生成 `MESSAGE_ID`**：
-   - 查询 message 表最大值：`SELECT MAX(MESSAGE_ID) FROM <error_table>`，计算 `max_base = floor(max_id / 1000)`（表为空时 `max_base = 0`）。
-   - 查询序列表：`SELECT CURRENT_VALUE FROM mt_sys_sequence WHERE NAME = ?`（`?` 为配置的序列表 NAME，默认 `mt_error_message_s`）。
-   - **比较取大**：
-     - 若 `max_base >= seq_value`：说明 message 表领先，使用 `base = max_base + 1`；`MESSAGE_ID = base × 1000 + 1`；回写 `UPDATE mt_sys_sequence SET CURRENT_VALUE = base WHERE NAME = ?`。
-     - 否则：使用 `MESSAGE_ID = seq_value × 1000 + 1`；更新 `UPDATE mt_sys_sequence SET CURRENT_VALUE = seq_value + 1 WHERE NAME = ?`。
-   - 查询与更新在同一个事务中执行，保证原子性。
-   - **插入失败不回滚**：即使后续 INSERT 失败，`mt_sys_sequence` 的 `CURRENT_VALUE` 不回退，允许跳号。
-6. 为每行数据组装完整字段：`MESSAGE_ID`（步骤 5 生成）、`TENANT_ID=2`、`MESSAGE_CODE`、`MESSAGE`、`INITIAL_FLAG='N'`、`CID=1`、`OBJECT_VERSION_NUMBER=1`、`CREATED_BY=null`、`CREATION_DATE=null`、`LAST_UPDATED_BY=null`、`LAST_UPDATE_DATE=null`。
-7. 根据数据库类型生成参数化 INSERT SQL（复用 `quoteIdentifier`），**同时生成主表和 tl 表的插入 SQL**。
-8. **主表与 tl 表在同一个事务中插入**：
-   - 先插入主表 `mt_error_message`。
-   - 再为 `ERROR_LOCALES` 配置的每种语言（默认 `zh_CN,en_US`）插入 tl 表 `mt_error_message_tl`：
-     - `MESSAGE_ID` = 同主表
-     - `LANG` = 语言代码
-     - `MESSAGE` = AI 传入的 message（当前阶段所有语言相同）。
-9. 提交事务，返回主表受影响的行数。
-
-**批量插入优化**：
-- 单条 SQL 插入多行：`INSERT INTO table (col1, col2) VALUES (?, ?), (?, ?), ...`
-- 复用现有 `executeQuery` 的参数化查询机制。
+3. 校验 `data` 非空且为数组，且单次不超过 1000 行。
+4. 若 `MESSAGE` 传入数组，校验数组长度与配置语言数量是否匹配。
+5. **开启事务**（如果数据库适配器支持 `beginTransaction`）。
+6. **批量生成 `MESSAGE_ID`**（`generateMessageIds(count)`）：
+   - 查询 message 表最大值：`SELECT MAX(MESSAGE_ID) as max_id FROM <error_table>`，计算 `maxBase = floor(max_id / divisor)`（`divisor = 10 ^ suffix.length`，表为空时 `maxBase = 0`）。
+   - 查询序列表（加 `FOR UPDATE` 锁）：`SELECT CURRENT_VALUE FROM mt_sys_sequence WHERE NAME = ? FOR UPDATE`。
+   - **比较取大，统一 +1**：
+     - `startBase = max(maxBase, seqValue) + 1`
+     - `endBase = startBase + count - 1`
+   - 更新序列表：`UPDATE mt_sys_sequence SET CURRENT_VALUE = ? WHERE NAME = ?`（值为 `endBase`）。
+   - 若 `affectedRows = 0`，则 `INSERT INTO mt_sys_sequence (NAME, CURRENT_VALUE) VALUES (?, ?)`。
+   - 生成连续 ID 列表：`parseInt(`${startBase + i}${suffix}`, 10)`，其中 `i = 0..count-1`。
+7. **构建主表批量 INSERT**：
+   - 列：`MESSAGE_ID`, `TENANT_ID`, `MESSAGE_CODE`, `MESSAGE`, `INITIAL_FLAG`, `CID`, `OBJECT_VERSION_NUMBER`
+   - 单条 SQL 插入所有行：`INSERT INTO ... VALUES (?,...), (?,...), ...`
+8. **构建 tl 表批量 INSERT**：
+   - 列：`MESSAGE_ID`, `LANG`, `MESSAGE`
+   - 每行主数据 × 语言数量：单条 SQL 插入所有行
+   - 多语言时取数组对应索引，缺失回退第一项；单语言时全部相同
+9. **提交事务**；若任何步骤失败则**回滚事务**（包括序列表更新）。
+10. 返回主表受影响的行数。
 
 **跨库处理**：
 - 若配置了 `ERROR_DATABASE`，SQL 中使用 `database.table` 格式（不同数据库的引号风格由 `quoteIdentifier` 统一处理）。
@@ -156,12 +171,11 @@ POST /api/insert-exception-data
 
 | 场景 | 错误提示 |
 |------|---------|
-| 未配置目标表 | `❌ 未配置目标错误信息表。请通过 --error-table CLI 参数或 ERROR_TABLE 环境变量指定` |
-| 未配置 tl 表 | `❌ 未配置目标多语言表。请通过 --error-tl-table CLI 参数或 ERROR_TL_TABLE 环境变量指定` |
+| 未配置目标表 | `❌ 未配置目标错误信息表或多语言表。请通过 --error-table 和 --error-tl-table 参数指定` |
 | 无 `insert` 权限 | `❌ 当前权限模式不允许插入操作，需要 insert 权限` |
 | `data` 为空或不是数组 | `❌ data 必须是非空数组` |
-| 目标表不存在 | `❌ 目标表 "xxx" 不存在` |
-| tl 表不存在 | `❌ 多语言表 "xxx" 不存在` |
+| `data` 超过 1000 行 | `❌ 单次插入最多 1000 行` |
+| `MESSAGE` 数组长度不匹配 | `❌ MESSAGE 数组长度 (x) 与配置语言数量 (y) 不匹配。当前语言顺序：...` |
 | 数据库约束失败 | 透传数据库原始错误信息 |
 | 插入失败 | 透传数据库原始错误信息 |
 
@@ -184,10 +198,10 @@ POST /api/insert-exception-data
 
 | 文件 | 变更类型 | 说明 |
 |------|---------|------|
-| `src/types/adapter.ts` | 修改 | 新增 `InsertExceptionDataResult` 接口 |
+| `src/types/adapter.ts` | 修改 | 新增 `InsertExceptionDataResult` 接口；`MESSAGE` 类型改为 `string \| string[]`；`ErrorTableConfig` 增加 `errorSeqSuffix` |
 | `src/types/http.ts` | 修改 | 新增 `InsertExceptionDataRequest`、`InsertExceptionDataResponse` 接口 |
-| `src/utils/config-loader.ts` | 修改 | 新增 `ERROR_DATABASE`、`ERROR_TABLE`、`ERROR_SEQ_NAME`、`ERROR_TL_TABLE`、`ERROR_MULTILANG`、`ERROR_LOCALES` 环境变量加载逻辑 |
-| `src/mcp/mcp-index.ts` | 修改 | 新增 `--error-database`、`--error-table`、`--error-seq-name`、`--error-tl-table`、`--error-multilang`、`--error-locales` CLI 参数解析 |
+| `src/utils/config-loader.ts` | 修改 | 新增 `ERROR_DATABASE`、`ERROR_TABLE`、`ERROR_SEQ_NAME`、`ERROR_TL_TABLE`、`ERROR_MULTILANG`、`ERROR_LOCALES`、`ERROR_SEQ_SUFFIX` 环境变量加载逻辑 |
+| `src/mcp/mcp-index.ts` | 修改 | 新增 `--error-database`、`--error-table`、`--error-seq-name`、`--error-tl-table`、`--error-multilang`、`--error-locales`、`--error-seq-suffix` CLI 参数解析 |
 | `src/core/database-service.ts` | 修改 | 新增 `insertExceptionData` 方法 |
 | `src/mcp/mcp-server.ts` | 修改 | 新增 `insert_exception_data` 工具定义和调用处理 |
 | `src/http/routes/query.ts` | 修改 | 新增 `/api/insert-exception-data` 端点 |
@@ -206,16 +220,20 @@ AI 调用 insert_exception_data
 ┌─────────────────┐
 │  DatabaseService│  1. 检查 ERROR_TABLE / ERROR_TL_TABLE 配置
 │                 │  2. 检查 insert 权限
-│                 │  3. 获取表 Schema，确认主表和 tl 表存在
-│                 │  4. 从 mt_sys_sequence 生成 MESSAGE_ID
-│                 │  5. 为每行数据补充系统字段
-│                 │  6. 生成主表和 tl 表的参数化 INSERT SQL
+│                 │  3. 校验 data 非空且不超过 1000 行
+│                 │  4. 校验 MESSAGE 数组长度（多语言时）
+│                 │  5. 开启事务（如适配器支持）
+│                 │  6. 批量从 mt_sys_sequence 生成 MESSAGE_ID（FOR UPDATE 锁）
+│                 │  7. 为每行数据补充系统字段
+│                 │  8. 生成主表和 tl 表的参数化 INSERT SQL
 └────────┬────────┘
          ▼
 ┌─────────────────┐
 │  数据库适配器     │  同一事务内插入主表 + tl 表
 │  (17种数据库)   │
 └────────┬────────┘
+         ▼
+    提交事务 / 失败回滚
          ▼
     返回 { affectedRows }
 ```
@@ -226,10 +244,13 @@ AI 调用 insert_exception_data
    - 配置缺失场景
    - 权限不足场景
    - 空 data 数组校验
+   - 超过 1000 行限制校验
+   - MESSAGE 数组长度与语言数量不匹配校验
    - 批量插入（单行、多行）
    - 系统字段是否正确填充
-   - MESSAGE_ID 生成逻辑（序列表 vs message 表最大值）
-   - tl 表是否正确插入（按配置语言数量 × data 行数）
+   - MESSAGE_ID 批量生成逻辑（序列表 vs message 表最大值、FOR UPDATE 锁、连续 ID）
+   - 事务回滚（序列表更新失败时是否回滚）
+   - tl 表是否正确插入（按配置语言数量 × data 行数、多语言数组回退）
    - 不同数据库的引号风格
 
 2. **集成测试**：MCP 工具端到端
@@ -243,7 +264,6 @@ AI 调用 insert_exception_data
 
 ## 非目标（YAGNI）
 
-- 不实现多语言开关为"开"的场景（tl 表各语言插入不同 message，待第二阶段）。
 - 不实现通用的 `insert_data`（任意表插入）。
 - 不实现 `update_exception_data` 或 `delete_exception_data`。
 - 不实现数据转换/映射（如 AI 传字符串，数据库要求整数）。
