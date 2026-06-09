@@ -431,6 +431,22 @@ export class DatabaseService {
       }
     }
 
+    // 全量查重：检查传入的 MESSAGE_CODE 是否已存在于数据库中
+    const mainQuotedTable = this.quoteIdentifier(mainTableRef);
+    const existingCodesQuery = `SELECT MESSAGE_CODE FROM ${mainQuotedTable}`;
+    const existingResult = await this.adapter.executeQuery(existingCodesQuery);
+    const existingCodes = new Set(
+      (existingResult.rows as Array<{ MESSAGE_CODE: string }>).map(r => r.MESSAGE_CODE)
+    );
+    const duplicates = data
+      .map(r => r.MESSAGE_CODE)
+      .filter(code => existingCodes.has(code));
+    if (duplicates.length > 0) {
+      throw new Error(
+        `❌ 以下 MESSAGE_CODE 已存在于数据库中，请更换后重试：${duplicates.join(', ')}`
+      );
+    }
+
     // 开启事务（MySQL 支持）
     const supportsTx = typeof this.adapter.beginTransaction === 'function';
     if (supportsTx) {
