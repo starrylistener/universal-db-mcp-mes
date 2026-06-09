@@ -2,6 +2,29 @@
 
 本文档记录 Universal DB MCP 的版本更新历史。
 
+## [mes-0.0.3] - 2026-06-09
+
+### 改进
+- **insert_exception_data 工具 description 优化** - 防止 AI 在调用前查询表结构
+  - 将「禁止查表」指令前置到 description 第一行，用醒目标签 `【禁止查表】` 强化
+  - 移除 inputSchema 中所有数据库字段类型信息（`varchar(255)`、`varchar(1000)`），消除触发 AI 查表本能的线索
+  - 将「要插入的错误信息数据行」改为「错误信息数据列表」，弱化数据库动作词汇
+  - 明确声明本工具为「完整的黑盒业务接口」，AI 只需传入业务参数，无需关心任何底层实现细节
+
+### 新增
+- **MESSAGE_CODE 全量查重** - 在 `insert_exception_data` 执行插入前，先全量查询主表所有已有 `MESSAGE_CODE`
+  - 若传入的 `MESSAGE_CODE` 已存在于数据库中，直接抛错返回给 AI：
+    ```
+    ❌ 以下 MESSAGE_CODE 已存在于数据库中，请更换后重试：XXX, YYY
+    ```
+  - 查重逻辑在事务开启前执行，有重复时不浪费事务资源，也不触发生成 MESSAGE_ID
+
+## [mes-0.0.2] - 2026-06-04
+
+### 改进
+- 统一 CLI 和服务标识符为 `universal-db-mcp-mes`
+- 更新 package.json 仓库/作者信息以反映 fork 归属
+
 ## [mes-0.0.1] - 2026-06-03
 
 ### 新增
